@@ -1,0 +1,147 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Fluence Point Class &mdash; bright v0.6 documentation</title>
+    <link rel="stylesheet" href="../_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="bright v0.6 documentation" href="../index.html" />
+    <link rel="up" title="ReactorMG Class" href="reactormg.html" />
+    <link rel="next" title="Reactor Parameters" href="reactor_parameters.html" />
+    <link rel="prev" title="ReactorMG Class" href="reactormg.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="reactor_parameters.html" title="Reactor Parameters"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="reactormg.html" title="ReactorMG Class"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Library Reference</a> &raquo;</li>
+          <li><a href="reactormg.html" accesskey="U">ReactorMG Class</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="fluence-point-class">
+<span id="bright-fluence-point"></span><h1>Fluence Point Class<a class="headerlink" href="#fluence-point-class" title="Permalink to this headline">¶</a></h1>
+<p>The reactor classes have a couple of helper classes that allow the to function in a more intuitive manner.
+The first is a simple FluencePoint data structure.  This contains information on where one is in the reactor&#8217;s
+fluence vector.</p>
+<p>All functionality may be found in the <tt class="docutils literal"><span class="pre">fluence_point</span></tt> module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">bright.flunece_point</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="bright.fluence_point.FluencePoint">
+<em class="property">class </em><tt class="descclassname">bright.fluence_point.</tt><tt class="descname">FluencePoint</tt><a class="headerlink" href="#bright.fluence_point.FluencePoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class holds three simple data points that represent a fluence point.</p>
+<dl class="attribute">
+<dt id="bright.fluence_point.FluencePoint.f">
+<tt class="descname">f</tt><a class="headerlink" href="#bright.fluence_point.FluencePoint.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index (int) of fluence immediately lower than the value of F.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.fluence_point.FluencePoint.F">
+<tt class="descname">F</tt><a class="headerlink" href="#bright.fluence_point.FluencePoint.F" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fluence value itself (float).  In units of [neutrons/kilobarn], abbr [n/kb].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.fluence_point.FluencePoint.m">
+<tt class="descname">m</tt><a class="headerlink" href="#bright.fluence_point.FluencePoint.m" title="Permalink to this definition">¶</a></dt>
+<dd><p>The slope (float) dBU/dF between points f and f+1.  Has the odd units of [MWd kb / kgIHM n]</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/BrightIconSmall.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="reactormg.html"
+                        title="previous chapter">ReactorMG Class</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="reactor_parameters.html"
+                        title="next chapter">Reactor Parameters</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/libref/fluence_point.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="reactor_parameters.html" title="Reactor Parameters"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="reactormg.html" title="ReactorMG Class"
+             >previous</a> |</li>
+        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Library Reference</a> &raquo;</li>
+          <li><a href="reactormg.html" >ReactorMG Class</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008 - 2011, Anthony Scopatz.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+<map id="inheritancedc5ff60ae9" name="inheritancedc5ff60ae9">
+<area shape="rect" id="node1" href="enrichment.html#bright.enrichment.Enrichment" title="Enrichment" alt="" coords="236,81,329,109"/>
+<area shape="rect" id="node2" href="fccomp.html#bright.fccomp.FCComp" title="FCComp" alt="" coords="53,207,128,235"/>
+<area shape="rect" id="node7" href="fuel_fabrication.html#bright.fuel_fabrication.FuelFabrication" title="FuelFabrication" alt="" coords="225,131,340,159"/>
+<area shape="rect" id="node10" href="reactor1g.html#bright.reactor1g.Reactor1G" title="Reactor1G" alt="" coords="239,182,327,210"/>
+<area shape="rect" id="node12" href="reactormg.html#bright.reactormg.ReactorMG" title="ReactorMG" alt="" coords="237,233,328,261"/>
+<area shape="rect" id="node19" href="reprocess.html#bright.reprocess.Reprocess" title="Reprocess" alt="" coords="240,283,325,311"/>
+<area shape="rect" id="node21" href="storage.html#bright.storage.Storage" title="Storage" alt="" coords="247,334,319,362"/>
+<area shape="rect" id="node4" href="reactor_parameters.html#bright.reactor_parameters.ReactorParameters" title="ReactorParameters" alt="" coords="19,157,163,185"/>
+<area shape="rect" id="node5" href="bright_config.html#bright.bright_config.BrightConf" title="BrightConf" alt="" coords="47,106,135,134"/>
+<area shape="rect" id="node6" href="enrichment.html#bright.enrichment.EnrichmentParameters" title="EnrichmentParameters" alt="" coords="7,55,175,83"/>
+<area shape="rect" id="node9" href="fast_reactor1g.html#bright.fast_reactor1g.FastReactor1G" title="FastReactor1G" alt="" coords="409,131,524,159"/>
+<area shape="rect" id="node14" href="light_water_reactor1g.html#bright.light_water_reactor1g.LightWaterReactor1G" title="LightWaterReactor1G" alt="" coords="389,182,544,210"/>
+<area shape="rect" id="node17" href="origen_reactormg.html#bright.origen_reactormg.OrigenReactorMG" title="OrigenReactorMG" alt="" coords="400,233,533,261"/>
+<area shape="rect" id="node23" href="fluence_point.html#bright.fluence_point.FluencePoint" title="FluencePoint" alt="" coords="40,5,141,33"/>
+</map>

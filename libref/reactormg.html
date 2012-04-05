@@ -1,0 +1,1510 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ReactorMG Class &mdash; bright v0.6 documentation</title>
+    <link rel="stylesheet" href="../_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="bright v0.6 documentation" href="../index.html" />
+    <link rel="up" title="Library Reference" href="index.html" />
+    <link rel="next" title="Fluence Point Class" href="fluence_point.html" />
+    <link rel="prev" title="Fast Reactor1G Class" href="fast_reactor1g.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="fluence_point.html" title="Fluence Point Class"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="fast_reactor1g.html" title="Fast Reactor1G Class"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="reactormg-class">
+<span id="bright-reactormg"></span><h1>ReactorMG Class<a class="headerlink" href="#reactormg-class" title="Permalink to this headline">¶</a></h1>
+<p>Reactors are the most computationally complex of the nuclear fuel cycle components currently implemented.
+Bright handles nuclear reactors in two distinct object classes: a one neutron energy group methodology
+and a multi-group algorithm (implemented here).</p>
+<p>All multi-group (MG) reactors share a common methodological backbone.  This page describes what is fundamentally
+the same about such reactor objects via the ReactorMG class.  This is a subclass of FCComp.</p>
+<p>The multi-group reactors are based on a algorithm submitted for published by the author to Nuclear
+Engineering &amp; Design and otherwise found in
+<a class="reference external" href="https://docs.google.com/viewer?a=v&amp;pid=explorer&amp;chrome=true&amp;srcid=0BxUpd34yizZrNTdlZTdlMDYtY2ZhZi00N2RhLWIxM2UtYTFkZDA5NDJhYTEx&amp;hl=en">Chapter 5  of the author&#8217;s dissertation</a>.</p>
+<p><strong>ReactorMG Helper &amp; Child Classes</strong></p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="fluence_point.html">Fluence Point Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reactor_parameters.html">Reactor Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="origen_reactormg.html">Origen ReactorMG Class</a></li>
+</ul>
+</div>
+<p>All functionality may be found in the <tt class="docutils literal"><span class="pre">reactormg</span></tt> module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">bright.reactormg</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="bright.reactormg.ReactorMG">
+<em class="property">class </em><tt class="descclassname">bright.reactormg.</tt><tt class="descname">ReactorMG</tt><a class="headerlink" href="#bright.reactormg.ReactorMG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multi-Group Reactor Fuel Cycle Component Class.  Daughter of FCComp class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>reactor_parameters</strong> : ReactorParameters or None, optional</p>
+<blockquote>
+<div><p>A special data structure that contains information on how to setup and run the reactor.</p>
+</div></blockquote>
+<p><strong>track_params</strong> : set of str or None, optional</p>
+<blockquote>
+<div><p>A set of strings that represents what parameter data the reactor should store and set.  
+Different reactor types may have different characteristic parameters that are of interest.</p>
+</div></blockquote>
+<p><strong>name</strong> : str, optional</p>
+<blockquote class="last">
+<div><p>The name of the reactor fuel cycle component instance.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.B">
+<tt class="descname">B</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.B" title="Permalink to this definition">¶</a></dt>
+<dd><p>This integer is the total number of batches in the fuel management scheme.  
+B is typically indexed by b.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.flux">
+<tt class="descname">flux</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.flux" title="Permalink to this definition">¶</a></dt>
+<dd><p>The nominal flux value (float) that the library for this reactor type was generated with.  
+Used to correctly weight batch-specific fluxes.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.chemical_form_fuel">
+<tt class="descname">chemical_form_fuel</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.chemical_form_fuel" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the chemical form of fuel as a dictionary or other mapping.  Keys are 
+often strings that represent isotopes while values represent the corresponding 
+mass weights.  The heavy metal concentration by the key &#8220;IHM&#8221;.  
+This will automatically fill in the nuclides in mat_feed for the &#8220;IHM&#8221; weight.  
+For example, LWRs typically use a UOX fuel form:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ReactorMG</span><span class="o">.</span><span class="n">chemical_form_fuel</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;IHM&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s">&quot;O16&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.chemical_form_clad">
+<tt class="descname">chemical_form_clad</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.chemical_form_clad" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the chemical form of cladding as a dictionary or other mapping.  
+This uses the same notation as fuel_form except that &#8220;IHM&#8221; is no longer 
+a valid key.  Cladding is often made from some zircalloy.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.chemical_form_cool">
+<tt class="descname">chemical_form_cool</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.chemical_form_cool" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the chemical form of coolant as a dictionary or other mapping.  
+This uses the same notation as fuel_form except that &#8220;IHM&#8221; is no longer 
+a valid key.  The term &#8216;coolant&#8217; is used in preference over the term 
+&#8216;moderator&#8217; because not all reactors moderate neutrons.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.rho_fuel">
+<tt class="descname">rho_fuel</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.rho_fuel" title="Permalink to this definition">¶</a></dt>
+<dd><p>The fuel region density.  A float in units of [g/cm^3].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.rho_clad">
+<tt class="descname">rho_clad</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.rho_clad" title="Permalink to this definition">¶</a></dt>
+<dd><p>The cladding region density.  A float in units of [g/cm^3].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.rho_cool">
+<tt class="descname">rho_cool</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.rho_cool" title="Permalink to this definition">¶</a></dt>
+<dd><p>The coolant region density.  A float in units of [g/cm^3].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.P_NL">
+<tt class="descname">P_NL</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.P_NL" title="Permalink to this definition">¶</a></dt>
+<dd><p>The reactor&#8217;s non-leakage probability (float).  This is often used as a calibration parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.target_BU">
+<tt class="descname">target_BU</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.target_BU" title="Permalink to this definition">¶</a></dt>
+<dd><p>The reactor&#8217;s target discharge burnup (float).  This is given 
+in units of [MWd/kgIHM].  Often the actual discharge burnup BUd does not 
+quite hit this value, but comes acceptably close.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.specific_power">
+<tt class="descname">specific_power</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.specific_power" title="Permalink to this definition">¶</a></dt>
+<dd><p>The specific power of the fuel (float) in units of [MW/kgIHM]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.burn_regions">
+<tt class="descname">burn_regions</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.burn_regions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of annular burn regions (int).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.S">
+<tt class="descname">S</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.S" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of burnup time steps.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.burn_time">
+<tt class="descname">burn_time</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.burn_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Curent burnup time [d].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.bt_s">
+<tt class="descname">bt_s</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.bt_s" title="Permalink to this definition">¶</a></dt>
+<dd><p>Curent burnup time index.  burn_time == burn_times[bt_s]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.burn_times">
+<tt class="descname">burn_times</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.burn_times" title="Permalink to this definition">¶</a></dt>
+<dd><p>A non-negative, monotonically increasing numpy float array (C++ vector&lt;double&gt;) of burnup times [days].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.use_zeta">
+<tt class="descname">use_zeta</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.use_zeta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolaean to determine whether the thermal disadvantage factor is employed or not.  
+LWRs typically set this as True while FRs have a False value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.lattice_flag">
+<tt class="descname">lattice_flag</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.lattice_flag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flag (str) that represents what lattice type the fuel assemblies are arranged in.  
+Currently accepted values are &#8220;Planar&#8221;, &#8220;Spherical&#8221;, and &#8220;Cylindrical&#8221;.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.rescale_hydrogen_xs">
+<tt class="descname">rescale_hydrogen_xs</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.rescale_hydrogen_xs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean to determine whether the reactor should rescale the Hydrogen-1 destruction 
+rate in the coolant as a function of fluence.  The scaling factor is calculated via the 
+following equation</p>
+<blockquote>
+<div><div class="math">
+<p><img src="../_images/math/6689e079e8ff0012d073701b945fc812a4c1ea43.png" alt="f(F) = 1.36927 - 0.01119 \cdot BU(F)" /></p>
+</div></div></blockquote>
+<p>This is typically not done for fast reactors but is a useful correction for LWRs.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.burnup_via_constant">
+<tt class="descname">burnup_via_constant</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.burnup_via_constant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flag (str) for constant &#8220;flux&#8221; or &#8220;power&#8221; calculations.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.branch_ratio_cutoff">
+<tt class="descname">branch_ratio_cutoff</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.branch_ratio_cutoff" title="Permalink to this definition">¶</a></dt>
+<dd><p>The cutoff value (float) below which the bateman equations are not solved.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.r_fuel">
+<tt class="descname">r_fuel</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.r_fuel" title="Permalink to this definition">¶</a></dt>
+<dd><p>The radius (float) of the fuel region [cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.r_void">
+<tt class="descname">r_void</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.r_void" title="Permalink to this definition">¶</a></dt>
+<dd><p>The radius (float) of the void region [cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.r_clad">
+<tt class="descname">r_clad</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.r_clad" title="Permalink to this definition">¶</a></dt>
+<dd><p>The radius (float) of the cladding region [cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.pitch">
+<tt class="descname">pitch</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.pitch" title="Permalink to this definition">¶</a></dt>
+<dd><p>The pitch or length (float) of the unit fuel pin cell [cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.S_O">
+<tt class="descname">S_O</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.S_O" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of slots (float) in a fuel assembly that are open.  Thus this is the 
+number of slots that do not contain a fuel pin and are instead filled in by coolant.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.S_T">
+<tt class="descname">S_T</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.S_T" title="Permalink to this definition">¶</a></dt>
+<dd><p>The total number of fuel pin slots (float) in a fuel assembly.  For a 17x17 bundle 
+this is 289.0.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.V_fuel">
+<tt class="descname">V_fuel</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.V_fuel" title="Permalink to this definition">¶</a></dt>
+<dd><p>The relative fuel region volume.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.V_clad">
+<tt class="descname">V_clad</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.V_clad" title="Permalink to this definition">¶</a></dt>
+<dd><p>The relative cladding region volume.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.V_cool">
+<tt class="descname">V_cool</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.V_cool" title="Permalink to this definition">¶</a></dt>
+<dd><p>The relative coolant region volume.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.libfile">
+<tt class="descname">libfile</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.libfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>The path (str) to the reactor data library; usually something like &#8220;lwr_mg.h5&#8221;.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.I">
+<tt class="descname">I</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.I" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set of nuclides that may be in mat_feed.  Indexed by i.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.J">
+<tt class="descname">J</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.J" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set of nuclides that may be in mat_prod.  Indexed by j.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.K">
+<tt class="descname">K</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.K" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set of nuclides that is the union of all nucs in mat_feed and all nucs in nuc_data.
+Indexed by k.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.K_num">
+<tt class="descname">K_num</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.K_num" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of K set.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.K_ord">
+<tt class="descname">K_ord</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.K_ord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lowest-to-highest order of K.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.K_ind">
+<tt class="descname">K_ind</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.K_ind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lowest-to-highest map of J into matrix position.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.nperturbations">
+<tt class="descname">nperturbations</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.nperturbations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of rows in the pertubtaion table.  Indexed by p.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.perturbed_fields">
+<tt class="descname">perturbed_fields</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.perturbed_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mapping of the form {field_name: [min, max, delta]}.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.G">
+<tt class="descname">G</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.G" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of energy bins.  Indexed by g for incident neutrons and h for exiting neutrons.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.E_g">
+<tt class="descname">E_g</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.E_g" title="Permalink to this definition">¶</a></dt>
+<dd><p>Energy bin boundaries [MeV].  Vector of doubles.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.phi_g">
+<tt class="descname">phi_g</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.phi_g" title="Permalink to this definition">¶</a></dt>
+<dd><p>Group fluxes [n/s/cm^2] (ie flux per energy group).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.phi">
+<tt class="descname">phi</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.phi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total flux [n/s/cm^2].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Phi">
+<tt class="descname">Phi</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Phi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fluence [n/kb].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.time0">
+<tt class="descname">time0</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.time0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time steps used in data library [d].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.BU0">
+<tt class="descname">BU0</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.BU0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Burnup vector used in data library [MWd/kgIHM].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Ti0">
+<tt class="descname">Ti0</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Ti0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data library&#8217;s transmutation vector [kg_i].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_t_pg">
+<tt class="descname">sigma_t_pg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_t_pg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total cross section from data library [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_a_pg">
+<tt class="descname">sigma_a_pg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_a_pg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absorption cross section from data library [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.nubar_sigma_f_pg">
+<tt class="descname">nubar_sigma_f_pg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.nubar_sigma_f_pg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Neutrons per fission times fission cross section from data library [n barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.chi_pg">
+<tt class="descname">chi_pg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.chi_pg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fission energy spectrum from data library [MeV].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_s_pgh">
+<tt class="descname">sigma_s_pgh</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_s_pgh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Group to group scattering cross section from data library [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_f_pg">
+<tt class="descname">sigma_f_pg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_f_pg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fission cross section from data library [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_gamma_pg">
+<tt class="descname">sigma_gamma_pg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_gamma_pg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Capture cross section from data library [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_2n_pg">
+<tt class="descname">sigma_2n_pg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_2n_pg" title="Permalink to this definition">¶</a></dt>
+<dd><p>(n, 2n) cross section from data library [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_3n_pg">
+<tt class="descname">sigma_3n_pg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_3n_pg" title="Permalink to this definition">¶</a></dt>
+<dd><p>(n, 3n) cross section from data library [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_alpha_pg">
+<tt class="descname">sigma_alpha_pg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_alpha_pg" title="Permalink to this definition">¶</a></dt>
+<dd><p>(n, alpha) cross section from data library [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_proton_pg">
+<tt class="descname">sigma_proton_pg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_proton_pg" title="Permalink to this definition">¶</a></dt>
+<dd><p>(n, proton) cross section from data library [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_gamma_x_pg">
+<tt class="descname">sigma_gamma_x_pg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_gamma_x_pg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Capture cross section (excited) from data library [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_2n_x_pg">
+<tt class="descname">sigma_2n_x_pg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_2n_x_pg" title="Permalink to this definition">¶</a></dt>
+<dd><p>(n, 2n*) cross section from data library [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.A_HM_t">
+<tt class="descname">A_HM_t</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.A_HM_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Atomic weight of heavy metal.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.MW_fuel_t">
+<tt class="descname">MW_fuel_t</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.MW_fuel_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuel Molecular Weight [amu].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.MW_clad_t">
+<tt class="descname">MW_clad_t</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.MW_clad_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cladding Molecular Weight [amu].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.MW_cool_t">
+<tt class="descname">MW_cool_t</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.MW_cool_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant Molecular Weight [amu].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.n_fuel_it">
+<tt class="descname">n_fuel_it</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.n_fuel_it" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuel Atom Number Weight.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.n_clad_it">
+<tt class="descname">n_clad_it</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.n_clad_it" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cladding Atom Number Weight.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.n_cool_it">
+<tt class="descname">n_cool_it</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.n_cool_it" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant Atom Number Weight.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.m_fuel_it">
+<tt class="descname">m_fuel_it</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.m_fuel_it" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuel Mass Weight.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.m_clad_it">
+<tt class="descname">m_clad_it</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.m_clad_it" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cladding Mass Weight.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.m_cool_it">
+<tt class="descname">m_cool_it</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.m_cool_it" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant Mass Weight.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.N_fuel_it">
+<tt class="descname">N_fuel_it</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.N_fuel_it" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuel Number Density [atoms/cm^3].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.N_clad_it">
+<tt class="descname">N_clad_it</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.N_clad_it" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cladding Number Density [atoms/cm^3].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.N_cool_it">
+<tt class="descname">N_cool_it</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.N_cool_it" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant Number Density [atoms/cm^3].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.phi_tg">
+<tt class="descname">phi_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.phi_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Group fluxes as a function of time [n/s/cm^2].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.phi_t">
+<tt class="descname">phi_t</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.phi_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total flux as a function of time [n/s/cm^2].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Phi_t">
+<tt class="descname">Phi_t</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Phi_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fluence as a function of time [n/kb].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.BU_t">
+<tt class="descname">BU_t</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.BU_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Burnup as a function of time [MWd/kgIHM].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.zeta_tg">
+<tt class="descname">zeta_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.zeta_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disadvantage factors per group as a function of time.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.T_it">
+<tt class="descname">T_it</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.T_it" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transformation Matrix [kg_i/kgIHM].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_t_itg">
+<tt class="descname">sigma_t_itg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_t_itg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total cross section as a function of nuclide and burn_time [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_a_itg">
+<tt class="descname">sigma_a_itg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_a_itg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absorption cross section as a function of nuclide and burn_time [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.nubar_sigma_f_itg">
+<tt class="descname">nubar_sigma_f_itg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.nubar_sigma_f_itg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Neutrons per fission times Fission cross section as a function of nuclide and burn_time [n barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.chi_itg">
+<tt class="descname">chi_itg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.chi_itg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fission neutron energy spectrum as a function of nuclide and burn_time [MeV].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_s_itgh">
+<tt class="descname">sigma_s_itgh</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_s_itgh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Group to group scattering cross section as a function of nuclide and burn_time [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_f_itg">
+<tt class="descname">sigma_f_itg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_f_itg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fission cross section as a function of nuclide and burn_time [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_gamma_itg">
+<tt class="descname">sigma_gamma_itg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_gamma_itg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Capture cross section as a function of nuclide and burn_time [barns]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_2n_itg">
+<tt class="descname">sigma_2n_itg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_2n_itg" title="Permalink to this definition">¶</a></dt>
+<dd><p>(n, 2n) cross section as a function of nuclide and burn_time [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_3n_itg">
+<tt class="descname">sigma_3n_itg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_3n_itg" title="Permalink to this definition">¶</a></dt>
+<dd><p>(n, 3n) cross section as a function of nuclide and burn_time [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_alpha_itg">
+<tt class="descname">sigma_alpha_itg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_alpha_itg" title="Permalink to this definition">¶</a></dt>
+<dd><p>(n, alpha) cross section as a function of nuclide and burn_time [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_proton_itg">
+<tt class="descname">sigma_proton_itg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_proton_itg" title="Permalink to this definition">¶</a></dt>
+<dd><p>(n, proton) cross section as a function of nuclide and burn_time [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_gamma_x_itg">
+<tt class="descname">sigma_gamma_x_itg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_gamma_x_itg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Capture cross section (excited) as a function of nuclide and burn_time [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.sigma_2n_x_itg">
+<tt class="descname">sigma_2n_x_itg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.sigma_2n_x_itg" title="Permalink to this definition">¶</a></dt>
+<dd><p>(n, 2n*) cross section as a function of nuclide and burn_time [barns].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_t_fuel_tg">
+<tt class="descname">Sigma_t_fuel_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_t_fuel_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuel-averaged macroscopic total cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_a_fuel_tg">
+<tt class="descname">Sigma_a_fuel_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_a_fuel_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuel-averaged macroscopic absorption cross section as a function of time and energy group [1/cm]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.nubar_Sigma_f_fuel_tg">
+<tt class="descname">nubar_Sigma_f_fuel_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.nubar_Sigma_f_fuel_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuel-averaged nubar times the macroscopic fission cross-section as a function of time and energy group [n/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.chi_fuel_tg">
+<tt class="descname">chi_fuel_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.chi_fuel_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuel-averaged fission neutron energy spectrum as a function of time and energy group [MeV].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_s_fuel_tgh">
+<tt class="descname">Sigma_s_fuel_tgh</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_s_fuel_tgh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuel-averaged macroscopic scattering kernel cross-section as a function of time [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_f_fuel_tg">
+<tt class="descname">Sigma_f_fuel_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_f_fuel_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuel-averaged macroscopic fission cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_gamma_fuel_tg">
+<tt class="descname">Sigma_gamma_fuel_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_gamma_fuel_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuel-averaged macroscopic capture cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_2n_fuel_tg">
+<tt class="descname">Sigma_2n_fuel_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_2n_fuel_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuel-averaged macroscopic (n, 2n) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_3n_fuel_tg">
+<tt class="descname">Sigma_3n_fuel_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_3n_fuel_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuel-averaged macroscopic (n, 3n) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_alpha_fuel_tg">
+<tt class="descname">Sigma_alpha_fuel_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_alpha_fuel_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuel-averaged macroscopic (n, alpha) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_proton_fuel_tg">
+<tt class="descname">Sigma_proton_fuel_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_proton_fuel_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuel-averaged macroscopic proton cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_gamma_x_fuel_tg">
+<tt class="descname">Sigma_gamma_x_fuel_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_gamma_x_fuel_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuel-averaged macroscopic capture (excited) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_2n_x_fuel_tg">
+<tt class="descname">Sigma_2n_x_fuel_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_2n_x_fuel_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuel-averaged macroscopic (n, 2n*) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.kappa_fuel_tg">
+<tt class="descname">kappa_fuel_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.kappa_fuel_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inverse of the fuel diffusion coefficent [1/cm^2].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_t_clad_tg">
+<tt class="descname">Sigma_t_clad_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_t_clad_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cladding-averaged macroscopic total cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_a_clad_tg">
+<tt class="descname">Sigma_a_clad_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_a_clad_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cladding-averaged macroscopic absorption cross section as a function of time and energy group [1/cm]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.nubar_Sigma_f_clad_tg">
+<tt class="descname">nubar_Sigma_f_clad_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.nubar_Sigma_f_clad_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cladding-averaged nubar times the macroscopic fission cross-section as a function of time and energy group [n/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.chi_clad_tg">
+<tt class="descname">chi_clad_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.chi_clad_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cladding-averaged fission neutron energy spectrum as a function of time and energy group [MeV].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_s_clad_tgh">
+<tt class="descname">Sigma_s_clad_tgh</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_s_clad_tgh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cladding-averaged macroscopic scattering kernel cross-section as a function of time [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_f_clad_tg">
+<tt class="descname">Sigma_f_clad_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_f_clad_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cladding-averaged macroscopic fission cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_gamma_clad_tg">
+<tt class="descname">Sigma_gamma_clad_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_gamma_clad_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cladding-averaged macroscopic capture cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_2n_clad_tg">
+<tt class="descname">Sigma_2n_clad_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_2n_clad_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cladding-averaged macroscopic (n, 2n) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_3n_clad_tg">
+<tt class="descname">Sigma_3n_clad_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_3n_clad_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cldding-averaged macroscopic (n, 3n) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_alpha_clad_tg">
+<tt class="descname">Sigma_alpha_clad_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_alpha_clad_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cladding-averaged macroscopic (n, alpha) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_proton_clad_tg">
+<tt class="descname">Sigma_proton_clad_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_proton_clad_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cladding-averaged macroscopic proton cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_gamma_x_clad_tg">
+<tt class="descname">Sigma_gamma_x_clad_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_gamma_x_clad_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cladding-averaged macroscopic capture (excited) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_2n_x_clad_tg">
+<tt class="descname">Sigma_2n_x_clad_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_2n_x_clad_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cladding-averaged macroscopic (n, 2n*) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.kappa_clad_tg">
+<tt class="descname">kappa_clad_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.kappa_clad_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inverse of the cladding diffusion coefficent [1/cm^2].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_t_cool_tg">
+<tt class="descname">Sigma_t_cool_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_t_cool_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant-averaged macroscopic total cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_a_cool_tg">
+<tt class="descname">Sigma_a_cool_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_a_cool_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant-averaged macroscopic absorption cross section as a function of time and energy group [1/cm]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.nubar_Sigma_f_cool_tg">
+<tt class="descname">nubar_Sigma_f_cool_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.nubar_Sigma_f_cool_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant-averaged nubar times the macroscopic fission cross-section as a function of time and energy group [n/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.chi_cool_tg">
+<tt class="descname">chi_cool_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.chi_cool_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant-averaged fission neutron energy spectrum as a function of time and energy group [MeV].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_s_cool_tgh">
+<tt class="descname">Sigma_s_cool_tgh</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_s_cool_tgh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant-averaged macroscopic scattering kernel cross-section as a function of time [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_f_cool_tg">
+<tt class="descname">Sigma_f_cool_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_f_cool_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant-averaged macroscopic fission cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_gamma_cool_tg">
+<tt class="descname">Sigma_gamma_cool_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_gamma_cool_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant-averaged macroscopic capture cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_2n_cool_tg">
+<tt class="descname">Sigma_2n_cool_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_2n_cool_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant-averaged macroscopic (n, 2n) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_3n_cool_tg">
+<tt class="descname">Sigma_3n_cool_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_3n_cool_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant-averaged macroscopic (n, 3n) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_alpha_cool_tg">
+<tt class="descname">Sigma_alpha_cool_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_alpha_cool_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant-averaged macroscopic (n, alpha) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_proton_cool_tg">
+<tt class="descname">Sigma_proton_cool_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_proton_cool_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant-averaged macroscopic proton cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_gamma_x_cool_tg">
+<tt class="descname">Sigma_gamma_x_cool_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_gamma_x_cool_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant-averaged macroscopic capture (excited) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_2n_x_cool_tg">
+<tt class="descname">Sigma_2n_x_cool_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_2n_x_cool_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant-averaged macroscopic (n, 2n*) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.kappa_cool_tg">
+<tt class="descname">kappa_cool_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.kappa_cool_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inverse of the coolant diffusion coefficent [1/cm^2].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_t_tg">
+<tt class="descname">Sigma_t_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_t_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core-averaged macroscopic total cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_a_tg">
+<tt class="descname">Sigma_a_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_a_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core-averaged macroscopic absorption cross section as a function of time and energy group [1/cm]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.nubar_Sigma_f_tg">
+<tt class="descname">nubar_Sigma_f_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.nubar_Sigma_f_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core-averaged nubar times the macroscopic fission cross-section as a function of time and energy group [n/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.chi_tg">
+<tt class="descname">chi_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.chi_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core-averaged fission neutron energy spectrum as a function of time and energy group [MeV].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_s_tgh">
+<tt class="descname">Sigma_s_tgh</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_s_tgh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core-averaged macroscopic scattering kernel cross-section as a function of time [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_f_tg">
+<tt class="descname">Sigma_f_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_f_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core-averaged macroscopic fission cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_gamma_tg">
+<tt class="descname">Sigma_gamma_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_gamma_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core-averaged macroscopic capture cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_2n_tg">
+<tt class="descname">Sigma_2n_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_2n_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core-averaged macroscopic (n, 2n) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_3n_tg">
+<tt class="descname">Sigma_3n_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_3n_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core-averaged macroscopic (n, 3n) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_alpha_tg">
+<tt class="descname">Sigma_alpha_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_alpha_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core-averaged macroscopic (n, alpha) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_proton_tg">
+<tt class="descname">Sigma_proton_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_proton_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core-averaged macroscopic proton cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_gamma_x_tg">
+<tt class="descname">Sigma_gamma_x_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_gamma_x_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core-averaged macroscopic capture (excited) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Sigma_2n_x_tg">
+<tt class="descname">Sigma_2n_x_tg</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Sigma_2n_x_tg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core-averaged macroscopic (n, 2n*) cross-section as a function of time and energy group [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.A_tgh">
+<tt class="descname">A_tgh</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.A_tgh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absorprion matrix, as a function of time [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.F_tgh">
+<tt class="descname">F_tgh</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.F_tgh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fission Matrix, as a function of time [1/cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.A_inv_tgh">
+<tt class="descname">A_inv_tgh</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.A_inv_tgh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inverse of absorprion matrix, as a function of time [cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.A_inv_F_tgh">
+<tt class="descname">A_inv_F_tgh</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.A_inv_F_tgh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inverse of absorprion matrix mult by the fission matrix, as a function of time.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.nearest_neighbors">
+<tt class="descname">nearest_neighbors</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.nearest_neighbors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute that denotes the indices of the perturbation table which are closest to 
+the current state of the reactor (ie densities, burn_time, etc).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.k_t">
+<tt class="descname">k_t</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.k_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiplication factor of the core as a function of time.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.td_n">
+<tt class="descname">td_n</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.td_n" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lower index of discharge time.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.td">
+<tt class="descname">td</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.td" title="Permalink to this definition">¶</a></dt>
+<dd><p>Discharge time [days].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.BUd">
+<tt class="descname">BUd</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.BUd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Discharge Burnup [MWd/kgIHM].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.Phid">
+<tt class="descname">Phid</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.Phid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Discharge Fluence [n/kb].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.k">
+<tt class="descname">k</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.k" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core multiplication factor.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.mat_feed_u">
+<tt class="descname">mat_feed_u</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.mat_feed_u" title="Permalink to this definition">¶</a></dt>
+<dd><p>The input uranium material, mat_feed.sub_u().</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.mat_feed_tru">
+<tt class="descname">mat_feed_tru</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.mat_feed_tru" title="Permalink to this definition">¶</a></dt>
+<dd><p>The input transuranic material, mat_feed.sub_tru().</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.mat_feed_lan">
+<tt class="descname">mat_feed_lan</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.mat_feed_lan" title="Permalink to this definition">¶</a></dt>
+<dd><p>The input lanthanide material, mat_feed.sub_lan().</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.mat_feed_act">
+<tt class="descname">mat_feed_act</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.mat_feed_act" title="Permalink to this definition">¶</a></dt>
+<dd><p>The input actininide material, mat_feed.sub_act().</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.mat_prod_u">
+<tt class="descname">mat_prod_u</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.mat_prod_u" title="Permalink to this definition">¶</a></dt>
+<dd><p>The output urnaium material, mat_prod.sub_u().</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.mat_prod_tru">
+<tt class="descname">mat_prod_tru</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.mat_prod_tru" title="Permalink to this definition">¶</a></dt>
+<dd><p>The output transuranic material, mat_prod.sub_tru().</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.mat_prod_lan">
+<tt class="descname">mat_prod_lan</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.mat_prod_lan" title="Permalink to this definition">¶</a></dt>
+<dd><p>The output lanthanide material, mat_prod.sub_lan().</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.mat_prod_act">
+<tt class="descname">mat_prod_act</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.mat_prod_act" title="Permalink to this definition">¶</a></dt>
+<dd><p>The output actininide material, mat_prod.sub_act().</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.deltaR">
+<tt class="descname">deltaR</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.deltaR" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <img class="math" src="../_images/math/54a4250f367ce0b8542a9368e68ef0d4a575db8c.png" alt="\delta R"/> value of the core with the current mat_feed.  This is equal 
+to the production rate minus the destruction rate at the target burnup:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">deltaR</span> <span class="o">=</span> <span class="n">batch_average</span><span class="p">(</span><span class="n">target_BU</span><span class="p">,</span> <span class="s">&quot;P&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">batch_average</span><span class="p">(</span><span class="n">target_BU</span><span class="p">,</span> <span class="s">&quot;D&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is computed via the calc_deltaR() method.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactormg.ReactorMG.tru_cr">
+<tt class="descname">tru_cr</tt><a class="headerlink" href="#bright.reactormg.ReactorMG.tru_cr" title="Permalink to this definition">¶</a></dt>
+<dd><p>The transuranic conversion ratio of the reactor (float).  
+This is set via the calc_tru_cr() method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.initialize">
+<tt class="descname">initialize</tt><big>(</big><em>reactor_parameters</em><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>The initialize() method for reactors copies all of the reactor specific parameters to this instance.
+Additionally, it calculates and sets the volumes VF and VC.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>reactor_parameters</strong> : ReactorParameters</p>
+<blockquote class="last">
+<div><p>A special data structure that contains information on how to setup and run the reactor.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.loadlib">
+<tt class="descname">loadlib</tt><big>(</big><em>libfile=&quot;reactor.h5&quot;</em><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.loadlib" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method finds the HDF5 library for this reactor and extracts the necessary information from it.
+This method is typically called by the constructor of the child reactor type object.  It must be 
+called before attempting to do any real computation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>libfile</strong> : str, optional</p>
+<blockquote class="last">
+<div><p>Path to the reactor library.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.interpolate_cross_sections">
+<tt class="descname">interpolate_cross_sections</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.interpolate_cross_sections" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method iterpolates the isotopic, time-dependent cross-sections based on the current 
+state of the burn_time, bt_s, and nearest_neighbors attributes.  It is prudent to call 
+the calc_nearest_neighbors() method before this one.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.calc_mass_weights">
+<tt class="descname">calc_mass_weights</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.calc_mass_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the mass weights for this time step.  Needed for fold_mass_weights() method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.fold_mass_weights">
+<tt class="descname">fold_mass_weights</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.fold_mass_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method performs the all-important task of doing the isotopically-weighted linear combination of raw data. 
+In a very real sense this is what makes this reactor <em>this specific reactor</em>.  The weights are taken 
+as the values of mat_feed.  The raw data must have previously been read in from loadlib().</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Anytime any reactor parameter whatsoever (mat_feed, P_NL, <em>etc</em>) is altered in any way, 
+the fold_mass_weights() function must be called to reset all of the resultant data.
+If you are unsure, please call this function anyway to be safe.  There is little 
+harm in calling it twice by accident.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.assemble_multigroup_matrices">
+<tt class="descname">assemble_multigroup_matrices</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.assemble_multigroup_matrices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Folds mass weight in with cross-sections for current time step.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.assemble_transmutation_matrices">
+<tt class="descname">assemble_transmutation_matrices</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.assemble_transmutation_matrices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the transmutation matrices for the current time step</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.calc_criticality">
+<tt class="descname">calc_criticality</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.calc_criticality" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs the criticality calculation to find k for this time step.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.calc_transmutation">
+<tt class="descname">calc_transmutation</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.calc_transmutation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Burns up the fuel using a matrix exponential method for this time step.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.init_core">
+<tt class="descname">init_core</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.init_core" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method generates a time-dependent parameters from an reactor&#8217;s initial conditions.
+This includes all burnup and criticality calculations.  These time-dependent data
+are then used to determine discharge compositions and other parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.burnup_core">
+<tt class="descname">burnup_core</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.burnup_core" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method generates a time-dependent parameters from an reactor&#8217;s initial conditions.
+This includes all burnup and criticality calculations.  These time-dependent data
+are then used to determine discharge compositions and other parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.calc_nearest_neighbors">
+<tt class="descname">calc_nearest_neighbors</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.calc_nearest_neighbors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates a sorted array that indexes the nearest neighbors of the 
+perturbations based off of the current state of the reactor.  The results may
+be found in the neareest_neighbors attribute.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.calc_T_itd">
+<tt class="descname">calc_T_itd</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.calc_T_itd" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function evaluates transmutation matrix at the discharge time td.
+The resultant isotopic dictionary is then converted into the mat_prod mass stream
+for this pass through the reactor.  Thus if ever you need to calculate mat_prod
+without going through calc(), use this function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.calc_mat_prod">
+<tt class="descname">calc_mat_prod</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.calc_mat_prod" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a convenience function that wraps the transmutation matrix methods.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.calc_sub_mats">
+<tt class="descname">calc_sub_mats</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.calc_sub_mats" title="Permalink to this definition">¶</a></dt>
+<dd><p>This sets possibly relevant reactor input and output substreams.  Specifically, it calculates the 
+attributes:</p>
+<blockquote>
+<div><ul class="simple">
+<li>mat_feed_u</li>
+<li>mat_feed_tru</li>
+<li>mat_feed_lan</li>
+<li>mat_feed_act</li>
+<li>mat_prod_u</li>
+<li>mat_prod_tru</li>
+<li>mat_prod_lan</li>
+<li>mat_prod_act</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.calc_tru_cr">
+<tt class="descname">calc_tru_cr</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.calc_tru_cr" title="Permalink to this definition">¶</a></dt>
+<dd><p>This calculates and sets the transuranic conversion ratio tru_cr through the equation:</p>
+<div class="math">
+<p><img src="../_images/math/532f08315257065082870e8ef099649583eb8ec5.png" alt="\mbox{tru\_cr} = \frac{\mbox{mat\_feed\_tru.mass} - \mbox{mat\_prod\_tru.mass}}{\frac{\mbox{BUd}}{935.0}}" /></p>
+</div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>tru_cr</strong> : float</p>
+<blockquote class="last">
+<div><p>The value of the transuranic conversion ratio just calculated.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.fluence_at_BU">
+<tt class="descname">fluence_at_BU</tt><big>(</big><em>burnup</em><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.fluence_at_BU" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes a burnup value  and returns a special fluence point object.  
+The fluence point is an amalgamation of data where the at which the burnup occurs.
+This object instance FP contains three pieces of information:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">FP</span><span class="o">.</span><span class="n">f</span>    <span class="c">#Index immediately lower than where BU achieved (int)</span>
+<span class="n">FP</span><span class="o">.</span><span class="n">F</span>    <span class="c">#Fluence value itself (float)</span>
+<span class="n">FP</span><span class="o">.</span><span class="n">m</span>    <span class="c">#Slope dBU/dF between points f and f+1 (double)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>burnup</strong> : float</p>
+<blockquote>
+<div><p>Burnup [MWd/kgIHM] at which to calculate the corresponding fluence.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>fp</strong> : FluencePoint</p>
+<blockquote class="last">
+<div><p>A class containing fluence information.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.batch_average_k">
+<tt class="descname">batch_average_k</tt><big>(</big><em>BUd</em><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.batch_average_k" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the batch average k(F) when at discharge burnup BUd.
+This function is typically iterated over until a BUd is found such that k(F) = 1.0 + err.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>BUd</strong> : float</p>
+<blockquote>
+<div><p>The discharge burnup [MWd/kgIHM] to obtain a batch-averaged value for.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>k</strong> : float</p>
+<blockquote class="last">
+<div><p>The batch averaged multiplication factor.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.BUd_bisection_method">
+<tt class="descname">BUd_bisection_method</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.BUd_bisection_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the maximum discharge burnup via the Bisection Method for a given mat_feed
+in this reactor.  This iterates over values of BUd to find a batch averaged multiplication factor 
+that is closest to 1.0.</p>
+<p>Other root finding methods for determining maximum discharge burnup are certainly possible.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.run_P_NL">
+<tt class="descname">run_P_NL</tt><big>(</big><em>pnl</em><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.run_P_NL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a reactor run for a specific non-leakage probability value.
+This requires that mat_feed be (meaningfully) set and is for use with calibrate_P_NL_to_BUd().</p>
+<p>This function amounts to the following code:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">P_NL</span> <span class="o">=</span> <span class="n">pnl</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">fold_mass_weights</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">BUd_bisection_method</span><span class="p">()</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>pnl</strong> : float</p>
+<blockquote class="last">
+<div><p>The new non-leakage probability for the reactor.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.calibrate_P_NL_to_BUd">
+<tt class="descname">calibrate_P_NL_to_BUd</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.calibrate_P_NL_to_BUd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Often times the non-leakage probability of a reactor is not known, though the input isotopics 
+and the target discharge burnup are.  This function handles that situation by
+calibrating the non-leakage probability of this reactor P_NL to hit its target burnup target_BU.
+Such a calibration proceeds by bisection method as well.  This function is extremely useful for 
+benchmarking calculations.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.reactormg.ReactorMG.calc">
+<tt class="descname">calc</tt><big>(</big><em>input=None</em><big>)</big><a class="headerlink" href="#bright.reactormg.ReactorMG.calc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Since many other methods provide the computational heavy-lifting of reactor calculations, 
+the calc() method is relatively simple:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">mat_feed</span> <span class="o">=</span> <span class="nb">input</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">fold_mass_weights</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">BUd_bisection_method</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">calc_mat_prod</span><span class="p">()</span>
+<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_prod</span>
+</pre></div>
+</div>
+<p>As you can see, all this function does is set burn an input stream to its maximum 
+discharge burnup and then reports on the output isotopics.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>input</strong> : dict or Material or None, optional</p>
+<blockquote>
+<div><p>If input is present, it set as the component&#8217;s mat_feed.  If input is a nuclide 
+dictionary (zzaaam keys, float values), this dictionary is first converted into 
+a Material before being set as mat_feed.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>output</strong> : Material</p>
+<blockquote class="last">
+<div><p>mat_prod</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/BrightIconSmall.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="fast_reactor1g.html"
+                        title="previous chapter">Fast Reactor1G Class</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="fluence_point.html"
+                        title="next chapter">Fluence Point Class</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/libref/reactormg.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="fluence_point.html" title="Fluence Point Class"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="fast_reactor1g.html" title="Fast Reactor1G Class"
+             >previous</a> |</li>
+        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008 - 2011, Anthony Scopatz.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

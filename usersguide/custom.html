@@ -1,0 +1,268 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Writing Custom Components &mdash; bright v0.6 documentation</title>
+    <link rel="stylesheet" href="../_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="bright v0.6 documentation" href="../index.html" />
+    <link rel="up" title="User’s Guide" href="index.html" />
+    <link rel="next" title="Notes for Developers" href="devnotes.html" />
+    <link rel="prev" title="The Bright Tutorial" href="tutorial.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="devnotes.html" title="Notes for Developers"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tutorial.html" title="The Bright Tutorial"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">User&#8217;s Guide</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="writing-custom-components">
+<span id="usersguide-custom"></span><h1>Writing Custom Components<a class="headerlink" href="#writing-custom-components" title="Permalink to this headline">¶</a></h1>
+<p>One of the main purposes of the bright framework in addition to providing a suite of fuel cycle components
+is to allow the user or developer to easily create their own custom components.  The natural way to leverage
+the existing functionality is to subclass existing components.  This may be done <em>either</em> on the C++ level
+or on the Python level.</p>
+<div class="section" id="subclassing-fccomp">
+<h2>Subclassing FCComp<a class="headerlink" href="#subclassing-fccomp" title="Permalink to this headline">¶</a></h2>
+<p>The abstract base class for bright is the fuel cycle component <a class="reference internal" href="../libref/fccomp.html#bright.fccomp.FCComp" title="bright.fccomp.FCComp"><tt class="xref py py-class docutils literal"><span class="pre">FCComp</span></tt></a>.
+This class handles much of the logic for initialization, I/O, and contains member variables which
+are common to all components.  To successfully subclass <a class="reference internal" href="../libref/fccomp.html#bright.fccomp.FCComp" title="bright.fccomp.FCComp"><tt class="xref py py-class docutils literal"><span class="pre">FCComp</span></tt></a>,
+the child class should override the following attributes and methods:</p>
+<ul class="simple">
+<li><strong>track_params</strong>: A set of strings used as keys in the params_prior_calc and params_after_calc
+maps.  This denotes what parameters are fundamentally important for this component to follow
+and determines which parameters are written to output.</li>
+<li><strong>calc([input])</strong>: A method which computes and returns the output material mat_prod given an input
+material mat_feed.  If input is not supplied as an argument to this function, the mat_feed material
+which is currently on the component is used.</li>
+<li><strong>calc_params()</strong>: A method which fills params_prior_calc and params_after_calc with the
+relevant values.  Should only be called after calc() has executed.</li>
+</ul>
+<p>The exact semantics of subclassing depend on which language is used.  For conciseness Python will be
+used here.</p>
+<div class="section" id="example-gundanium-alloy">
+<h3>Example: Gundanium Alloy<a class="headerlink" href="#example-gundanium-alloy" title="Permalink to this headline">¶</a></h3>
+<p>Suppose that a new type of cladding material which can only be produced in outer space has just
+been discovered!  This rare substance has been dubbed <strong>Gundanium alloy</strong> and is comprised of silver
+and neodymium in equal parts (AgNd).  A very expensive fabrication facility has been constructed.
+As it turns out, the amount of Gundanium that may be produced is a strong function of the number
+of g-forces.  As a plucky young fuel cycle student, you have decided to model this facility.</p>
+<p>You start out by subclassing <a class="reference internal" href="../libref/fccomp.html#bright.fccomp.FCComp" title="bright.fccomp.FCComp"><tt class="xref py py-class docutils literal"><span class="pre">FCComp</span></tt></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bright</span> <span class="kn">import</span> <span class="n">bright_conf</span>
+<span class="kn">from</span> <span class="nn">bright.fccomp</span> <span class="kn">import</span> <span class="n">FCComp</span>
+<span class="kn">from</span> <span class="nn">pyne.material</span> <span class="kn">import</span> <span class="n">Material</span>
+
+<span class="k">class</span> <span class="nc">GundaniumFab</span><span class="p">(</span><span class="n">FCComp</span><span class="p">):</span>
+
+    <span class="c"># Override constructor to provide a default g-force</span>
+    <span class="c"># Also, set track_params for the class here</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">1E-3</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+        <span class="n">track_params</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s">&#39;g&#39;</span><span class="p">,</span> <span class="s">&#39;mass_AgNd&#39;</span><span class="p">])</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GundaniumFab</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">track_params</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span>
+
+    <span class="c"># Override calc() method to create Gundanium mass</span>
+    <span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Removes silver and neodymium from a material to make Gundanium alloy.&quot;&quot;&quot;</span>
+        <span class="c"># Check the input first</span>
+        <span class="k">if</span> <span class="nb">input</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Material</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mat_feed</span> <span class="o">=</span> <span class="nb">input</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mat_feed</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+
+        <span class="n">feed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_feed</span>
+
+        <span class="n">ag</span> <span class="o">=</span> <span class="n">feed</span><span class="p">[</span><span class="s">&#39;Ag&#39;</span><span class="p">:</span><span class="s">&#39;Cd&#39;</span><span class="p">]</span>
+        <span class="n">nd</span> <span class="o">=</span> <span class="n">feed</span><span class="p">[</span><span class="s">&#39;Nd&#39;</span><span class="p">:</span><span class="s">&#39;Pm&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">ag</span><span class="o">.</span><span class="n">mass</span> <span class="o">&lt;=</span> <span class="n">nd</span><span class="o">.</span><span class="n">mass</span><span class="p">:</span>
+            <span class="n">nd</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">mass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ag</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">nd</span><span class="o">.</span><span class="n">mass</span>
+
+        <span class="n">agnd</span> <span class="o">=</span> <span class="n">ag</span> <span class="o">+</span> <span class="n">nd</span>
+        <span class="n">agnd</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">agnd</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">/</span><span class="mf">9.8</span><span class="p">)</span>
+        <span class="n">agnd</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;Gundanium Alloy&quot;</span>
+        <span class="n">agnd</span><span class="o">.</span><span class="n">atoms_per_mol</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mat_prod</span> <span class="o">=</span> <span class="n">agnd</span>
+        <span class="k">return</span> <span class="n">agnd</span>
+
+    <span class="c"># Override the calc_params() to set the appropriate parameter values</span>
+    <span class="k">def</span> <span class="nf">calc_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate fabrication parameters.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&#39;g&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&#39;g&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&#39;mass_AgNd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&#39;mass_AgNd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_prod</span><span class="o">.</span><span class="n">mass</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c"># Init the nuclides</span>
+    <span class="n">bright_conf</span><span class="o">.</span><span class="n">track_nucs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s">&#39;Ag107&#39;</span><span class="p">,</span> <span class="s">&#39;B10&#39;</span><span class="p">,</span> <span class="s">&#39;ND144&#39;</span><span class="p">])</span>
+
+    <span class="c"># Create an instance of the sub-class and some material</span>
+    <span class="n">gf</span> <span class="o">=</span> <span class="n">GundaniumFab</span><span class="p">(</span><span class="mf">0.98</span><span class="p">,</span> <span class="s">&quot;Shangri-La&quot;</span><span class="p">)</span>
+    <span class="n">mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">({</span><span class="s">&#39;Ag107&#39;</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">,</span> <span class="s">&#39;B10&#39;</span><span class="p">:</span> <span class="mf">42.0</span><span class="p">,</span> <span class="s">&#39;ND144&#39;</span><span class="p">:</span> <span class="mf">65.0</span><span class="p">})</span>
+
+    <span class="c"># Calculate the product produced</span>
+    <span class="n">prod</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">prod</span>
+
+    <span class="c"># Set the parameters and display output</span>
+    <span class="n">gf</span><span class="o">.</span><span class="n">calc_params</span><span class="p">()</span>
+    <span class="n">gf</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="other-subclasses">
+<h3>Other Subclasses<a class="headerlink" href="#other-subclasses" title="Permalink to this headline">¶</a></h3>
+<p>Any of the other daughter classes of <a class="reference internal" href="../libref/fccomp.html#bright.fccomp.FCComp" title="bright.fccomp.FCComp"><tt class="xref py py-class docutils literal"><span class="pre">FCComp</span></tt></a> may be subclassed
+and their behavior altered.  More sophisticated components may require additional methods or
+attributes to be specified. In all cases, the three attributes above must be implemented.</p>
+<p>An example of subclassing that has become part of the bright suite is the
+<a class="reference internal" href="../libref/origen_reactormg.html#bright.origen_reactormg.OrigenReactorMG" title="bright.origen_reactormg.OrigenReactorMG"><tt class="xref py py-class docutils literal"><span class="pre">OrigenReactorMG</span></tt></a> component.  This class
+inherits from the standard <a class="reference internal" href="../libref/reactormg.html#bright.reactormg.ReactorMG" title="bright.reactormg.ReactorMG"><tt class="xref py py-class docutils literal"><span class="pre">ReactorMG</span></tt></a> class and swaps
+out the parent&#8217;s transmutation methods with the an ORIGEN 2.2 based approach.  Please refer
+to the source code for more implementation details.</p>
+</div>
+<div class="section" id="adaptation">
+<h3>Adaptation<a class="headerlink" href="#adaptation" title="Permalink to this headline">¶</a></h3>
+<p>Another powerful feature of this subclassing approach is the ability to adapt the existing
+classes to new use cases.  Suppose a pricing model (based on the mass of the output) is desired.
+Thus all components should have an associated price() method.  Thin subclasses which mix
+an adapter and the base classes can easily be defined.  For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">bright.api</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c"># Adapter class</span>
+
+<span class="k">class</span> <span class="nc">PriceAdapter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;I am useless on my own.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_prod</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="mf">42.0</span>
+
+
+<span class="c"># Adapted classes</span>
+
+<span class="k">class</span> <span class="nc">PricedFCComp</span><span class="p">(</span><span class="n">FCComp</span><span class="p">,</span> <span class="n">PriceAdapter</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">PricedEnrichment</span><span class="p">(</span><span class="n">Enrichment</span><span class="p">,</span> <span class="n">PriceAdapter</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">PricedStorage</span><span class="p">(</span><span class="n">Storage</span><span class="p">,</span> <span class="n">PriceAdapter</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/BrightIconSmall.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Writing Custom Components</a><ul>
+<li><a class="reference internal" href="#subclassing-fccomp">Subclassing FCComp</a><ul>
+<li><a class="reference internal" href="#example-gundanium-alloy">Example: Gundanium Alloy</a></li>
+<li><a class="reference internal" href="#other-subclasses">Other Subclasses</a></li>
+<li><a class="reference internal" href="#adaptation">Adaptation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="tutorial.html"
+                        title="previous chapter">The Bright Tutorial</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="devnotes.html"
+                        title="next chapter">Notes for Developers</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/usersguide/custom.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="devnotes.html" title="Notes for Developers"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tutorial.html" title="The Bright Tutorial"
+             >previous</a> |</li>
+        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+          <li><a href="index.html" >User&#8217;s Guide</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008 - 2011, Anthony Scopatz.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

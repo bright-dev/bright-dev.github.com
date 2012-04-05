@@ -1,0 +1,164 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to Bright’s documentation! &mdash; bright v0.6 documentation</title>
+    <link rel="stylesheet" href="_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="bright v0.6 documentation" href="#" />
+    <link rel="next" title="The Bright Tutorial" href="usersguide/tutorial.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="usersguide/tutorial.html" title="The Bright Tutorial"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">bright v0.6 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="welcome-to-bright-s-documentation">
+<h1>Welcome to Bright&#8217;s documentation!<a class="headerlink" href="#welcome-to-bright-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Bright is a nuclear fuel cycle code.  Bright is a C++ library that models many canonical
+components such as reactors, storage facilities, and more. These components are then linked to one another using
+the Material object from PyNE.</p>
+<p>Arbitrarily hooking together fuel cycle objects in C-code is usually an unwieldy task that
+has low computational overhead.  Bright, therefore, is simply a collection of object models that
+allow another program to connect them.  The bright bindings enable this hooking to be done
+in Python or C++.  Thus by using bright, Python itself becomes the fuel cycle interpreter while allowing the
+heavy lifting of the models is performed by the faster C++ code.</p>
+<p>Since bright fuel cycle objects will usually be called via Python, this documentation
+discusses the Python level, though it serves for both interfaces.</p>
+<p>Bright currently has the following external C++ dependencies:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><a class="reference external" href="http://www.hdfgroup.org/HDF5/">HDF5</a></li>
+<li><a class="reference external" href="http://pyne.github.com/pyne/">PyNE</a></li>
+</ol>
+</div></blockquote>
+<p>From python, Bright may require these additional dependencies:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><a class="reference external" href="http://cython.org/">Cython</a></li>
+<li><a class="reference external" href="http://numpy.scipy.org/">NumPy</a></li>
+<li><a class="reference external" href="http://www.scipy.org/">SciPy</a></li>
+<li><a class="reference external" href="http://code.enthought.com/">ETS</a> (for GUI)</li>
+<li><a class="reference external" href="http://www.pytables.org/">PyTables</a></li>
+</ol>
+</div></blockquote>
+<p>The source code for Bright and bright may be found at the
+<a class="reference external" href="http://github.com/bright-dev/bright">GitHub project site</a>.
+Or you may simply clone the development branch using git:</p>
+<div class="highlight-python"><pre>git clone git://github.com/bright-dev/bright.git</pre>
+</div>
+<p>Lastly, you can join up as a Bright developer at
+<a class="reference external" href="http://groups.google.com/group/bright-dev">the Google groups page</a>.</p>
+<div class="section" id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usersguide/tutorial.html">The Bright Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usersguide/index.html">User&#8217;s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libref/index.html">Library Reference</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="helpful-links">
+<h1>Helpful Links<a class="headerlink" href="#helpful-links" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="#">
+              <img class="logo" src="_static/BrightIconSmall.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to Bright&#8217;s documentation!</a><ul>
+<li><a class="reference internal" href="#contents">Contents</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#helpful-links">Helpful Links</a></li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="usersguide/tutorial.html"
+                        title="next chapter">The Bright Tutorial</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="usersguide/tutorial.html" title="The Bright Tutorial"
+             >next</a> |</li>
+        <li><a href="#">bright v0.6 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008 - 2011, Anthony Scopatz.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

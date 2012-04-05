@@ -1,0 +1,296 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Bright Configuration &mdash; bright v0.6 documentation</title>
+    <link rel="stylesheet" href="../_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="bright v0.6 documentation" href="../index.html" />
+    <link rel="up" title="Library Reference" href="index.html" />
+    <link rel="next" title="FCComp Class" href="fccomp.html" />
+    <link rel="prev" title="Library Reference" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="fccomp.html" title="FCComp Class"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Library Reference"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="bright-configuration">
+<span id="bright-bright-config"></span><h1>Bright Configuration<a class="headerlink" href="#bright-configuration" title="Permalink to this headline">¶</a></h1>
+<p>This module provides tools for manipulating bright-namespace level configuration
+variables which may affect all fuel cycle components.</p>
+<p>All functionality may be found in the <tt class="docutils literal"><span class="pre">bright_config</span></tt> module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">bright.bright_config</span>
+</pre></div>
+</div>
+<div class="section" id="configuration-object">
+<h2>Configuration Object<a class="headerlink" href="#configuration-object" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="bright.bright_config.BrightConf">
+<em class="property">class </em><tt class="descclassname">bright.bright_config.</tt><tt class="descname">BrightConf</tt><a class="headerlink" href="#bright.bright_config.BrightConf" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class whose attributes expose C++ bright namespace variables.  The bright_conf object is a 
+singleton instance of this class.</p>
+<dl class="attribute">
+<dt id="bright.bright_config.BrightConf.BRIGHT_DATA">
+<tt class="descname">BRIGHT_DATA</tt><a class="headerlink" href="#bright.bright_config.BrightConf.BRIGHT_DATA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overide for directory path which is (by default) read in from an environmental variable of the same name.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.bright_config.BrightConf.track_nucs">
+<tt class="descname">track_nucs</tt><a class="headerlink" href="#bright.bright_config.BrightConf.track_nucs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set of nuclides (in zzaaam form, see pyne) which components should track.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.bright_config.BrightConf.track_nucs_order">
+<tt class="descname">track_nucs_order</tt><a class="headerlink" href="#bright.bright_config.BrightConf.track_nucs_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array nuclides which determines the order of track_nucs.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.bright_config.BrightConf.verbosity">
+<tt class="descname">verbosity</tt><a class="headerlink" href="#bright.bright_config.BrightConf.verbosity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines the at which to print messages. Lower numbers mean fewer messages (default 0).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.bright_config.BrightConf.write_hdf5">
+<tt class="descname">write_hdf5</tt><a class="headerlink" href="#bright.bright_config.BrightConf.write_hdf5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean flag for whether to write binary HDF5 output.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.bright_config.BrightConf.write_text">
+<tt class="descname">write_text</tt><a class="headerlink" href="#bright.bright_config.BrightConf.write_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean flag for whether to write flat text file output.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">write_hdf5</tt></dt>
+<dd><p>Boolean flag for whether to write binary HDF5 output.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.bright_config.BrightConf.output_filename">
+<tt class="descname">output_filename</tt><a class="headerlink" href="#bright.bright_config.BrightConf.output_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to outputh file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="helper-functions">
+<h2>Helper Functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bright.bright_config.bright_start">
+<tt class="descclassname">bright.bright_config.</tt><tt class="descname">bright_start</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.bright_config.bright_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles bright initialization.  Reads in the &#8216;BRIGHT_DATA&#8217; environment variable.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.bright_config.load_track_nucs_hdf5">
+<tt class="descclassname">bright.bright_config.</tt><tt class="descname">load_track_nucs_hdf5</tt><big>(</big><em>filename</em>, <em>datasetname=&quot;&quot;</em>, <em>clear=False</em><big>)</big><a class="headerlink" href="#bright.bright_config.load_track_nucs_hdf5" title="Permalink to this definition">¶</a></dt>
+<dd><p>This convience function tries to load the track_nucs set from a dataset 
+in an HDF5 file.  The dataset <em>must</em> be of integer type.  String-based
+nuclide names are currently not supported.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>Path to the data library.</p>
+</div></blockquote>
+<p><strong>dataset</strong> : str, optional</p>
+<blockquote>
+<div><p>Dataset name to grab nuclides from.</p>
+</div></blockquote>
+<p><strong>clear</strong> : bool, optional</p>
+<blockquote class="last">
+<div><p>Flag that if set removes the currrent entries from track_nucs prior to loading in new values.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If the dataset argument is not provided or empty, the function tries to 
+load from various default datasets in the following order:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="s">&quot;/track_nucs&quot;</span>  
+<span class="s">&quot;/Isos2Track&quot;</span>
+<span class="s">&quot;/isostrack&quot;</span>   
+<span class="s">&quot;/IsosTrack&quot;</span>
+<span class="s">&quot;/isotrack&quot;</span>   
+<span class="s">&quot;/IsoTrack&quot;</span>    
+<span class="s">&quot;/ToIso&quot;</span>
+<span class="s">&quot;/ToIsos&quot;</span>
+<span class="s">&quot;/ToIso_zz&quot;</span>
+<span class="s">&quot;/ToIso_MCNP&quot;</span>
+<span class="s">&quot;/FromIso&quot;</span>  
+<span class="s">&quot;/FromIsos&quot;</span>  
+<span class="s">&quot;/FromIso_zz&quot;</span> 
+<span class="s">&quot;/FromIso_MCNP&quot;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.bright_config.load_track_nucs_text">
+<tt class="descclassname">bright.bright_config.</tt><tt class="descname">load_track_nucs_text</tt><big>(</big><em>filename</em>, <em>clear=False</em><big>)</big><a class="headerlink" href="#bright.bright_config.load_track_nucs_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>This convience function tries to load the track_nucs set from a text
+file.  The nuclide names may use any naming convention.  Mixing different
+conventions in the same file is allowed.  Whitespace is required between
+isotopic names.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>Path to the data library.</p>
+</div></blockquote>
+<p><strong>clear</strong> : bool</p>
+<blockquote class="last">
+<div><p>Flag that if set removes the currrent entries from track_nucs prior to loading in new values.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.bright_config.sort_track_nucs">
+<tt class="descclassname">bright.bright_config.</tt><tt class="descname">sort_track_nucs</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.bright_config.sort_track_nucs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function sorts the track_nucs and places the result in track_nucs_order.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="helper-data">
+<h2>Helper Data<a class="headerlink" href="#helper-data" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="bright.bright_config.lib">
+<tt class="descclassname">bright.bright_config.</tt><tt class="descname">lib</tt><a class="headerlink" href="#bright.bright_config.lib" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to pure C++ library directory.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="bright.bright_config.includes">
+<tt class="descclassname">bright.bright_config.</tt><tt class="descname">includes</tt><a class="headerlink" href="#bright.bright_config.includes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to C++ and Cython header file directory.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="bright.bright_config.bright_data">
+<tt class="descclassname">bright.bright_config.</tt><tt class="descname">bright_data</tt><a class="headerlink" href="#bright.bright_config.bright_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to bright data directory.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/BrightIconSmall.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Bright Configuration</a><ul>
+<li><a class="reference internal" href="#configuration-object">Configuration Object</a></li>
+<li><a class="reference internal" href="#helper-functions">Helper Functions</a></li>
+<li><a class="reference internal" href="#helper-data">Helper Data</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Library Reference</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="fccomp.html"
+                        title="next chapter">FCComp Class</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/libref/bright_config.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="fccomp.html" title="FCComp Class"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Library Reference"
+             >previous</a> |</li>
+        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008 - 2011, Anthony Scopatz.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

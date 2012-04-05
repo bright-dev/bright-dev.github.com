@@ -1,0 +1,561 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Enrichment &mdash; bright v0.6 documentation</title>
+    <link rel="stylesheet" href="../_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="bright v0.6 documentation" href="../index.html" />
+    <link rel="up" title="Library Reference" href="index.html" />
+    <link rel="next" title="Fuel Fabrication Class" href="fuel_fabrication.html" />
+    <link rel="prev" title="FCComp Class" href="fccomp.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="fuel_fabrication.html" title="Fuel Fabrication Class"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="fccomp.html" title="FCComp Class"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="enrichment">
+<span id="bright-enrichment"></span><h1>Enrichment<a class="headerlink" href="#enrichment" title="Permalink to this headline">¶</a></h1>
+<p>Bright handles enrichment cascades in a very general manner.  The Enrichment
+object supports normal two isotope component mixture enrichment as well as
+multi-component cascades.</p>
+<p>Multi-component enrichment poses a special modeling issue because the problem
+is underdetermined by an order equal to the number of nuclides in the cascade
+minus two.  (Thus, two-component enrichment is <em>exactly</em> determined.)
+Therefore, an N-2 dimensional surface of possible solutions exists.
+The &#8216;correct&#8217; solution is found by optimizing <img class="math" src="../_images/math/514518880fc01470c58e35fc3a46d2510661aba9.png" alt="M^*"/>, the mass at which
+the overall stage separation factor is unity.  This model is largely based off
+of the work of A. de la Garza, E. von Halle, and H. Wood.</p>
+<p>All functionality may be found in the <tt class="docutils literal"><span class="pre">enrichment</span></tt> module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">bright.enrichment</span>
+</pre></div>
+</div>
+<div class="section" id="the-enrichment-class">
+<h2>The Enrichment Class<a class="headerlink" href="#the-enrichment-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="bright.enrichment.Enrichment">
+<em class="property">class </em><tt class="descclassname">bright.enrichment.</tt><tt class="descname">Enrichment</tt><a class="headerlink" href="#bright.enrichment.Enrichment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enrichment Fuel Cycle Component Class.  Daughter of FCComp.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>enrich_params</strong> : EnrichmentParameters, optional</p>
+<blockquote>
+<div><p>This specifies how the enrichment cascade should be set up.  It is a EnrichmentParameters
+instance.  If enrich_params is not specified, then the cascade is initialized with values 
+from uranium_enrichment_defaults().</p>
+</div></blockquote>
+<p><strong>name</strong> : str</p>
+<blockquote class="last">
+<div><p>The name of the enrichment fuel cycle component instance.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="bright.enrichment.Enrichment.mat_tail">
+<tt class="descname">mat_tail</tt><a class="headerlink" href="#bright.enrichment.Enrichment.mat_tail" title="Permalink to this definition">¶</a></dt>
+<dd><p>In addition to the mat_feed and mat_prod materials, Enrichment
+also has a tails or waste stream that is represented by this attribute.
+The mass of this material and the ms_prod product material should always 
+add up to the mass of the mat_feed feed stock.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.Enrichment.track_params">
+<tt class="descname">track_params</tt><a class="headerlink" href="#bright.enrichment.Enrichment.track_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>For Enrichment, the parameters that are automatically tracked are members of the following list:
+<tt class="docutils literal"><span class="pre">[&quot;MassFeed&quot;,</span> <span class="pre">&quot;MassProduct&quot;,</span> <span class="pre">&quot;MassTails&quot;,</span> <span class="pre">&quot;N&quot;,</span> <span class="pre">&quot;M&quot;,</span> <span class="pre">&quot;Mstar&quot;,</span> <span class="pre">&quot;TotalPerFeed&quot;,</span> <span class="pre">&quot;SWUperFeed&quot;,</span> <span class="pre">&quot;SWUperProduct&quot;]</span></tt>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.Enrichment.alpha_0">
+<tt class="descname">alpha_0</tt><a class="headerlink" href="#bright.enrichment.Enrichment.alpha_0" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <img class="math" src="../_images/math/2e91bbbe6d9d3befa4e1a622257816568b108b00.png" alt="\alpha_0"/> attribute specifies the overall stage separation factor
+for the cascade.  This should be set on initialization.  Values should be
+greater than one.  Values less than one represent de-enrichment.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.Enrichment.Mstar_0">
+<tt class="descname">Mstar_0</tt><a class="headerlink" href="#bright.enrichment.Enrichment.Mstar_0" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <img class="math" src="../_images/math/04e5c99bb53600f442e367f66345938b968a1c6b.png" alt="M^*_0"/> represents a first guess at what the <cite>Mstar</cite> should be.
+The value of Mstar_0 on initialization should be in the ballpark
+of the optimized result of the Mstar attribute.  However, <img class="math" src="../_images/math/04e5c99bb53600f442e367f66345938b968a1c6b.png" alt="M^*_0"/> must
+always have a value between the weights of the j and k key components.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.Enrichment.Mstar">
+<tt class="descname">Mstar</tt><a class="headerlink" href="#bright.enrichment.Enrichment.Mstar" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <img class="math" src="../_images/math/514518880fc01470c58e35fc3a46d2510661aba9.png" alt="M^*"/> attribute represents the mass for which the adjusted
+stage separation factor, <img class="math" src="../_images/math/4b6a36c02acc6a76dcc1fd8206e66a0a43dab0e6.png" alt="\alpha^*_i"/>, is equal to one.  It is this
+value that is varied to achieve an optimized enrichment cascade.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.Enrichment.j">
+<tt class="descname">j</tt><a class="headerlink" href="#bright.enrichment.Enrichment.j" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is an integer in zzaaam-form that represents the jth key component.
+This nuclide is preferentially enriched in the product stream.
+For standard uranium cascades j is 922350 (ie U-235).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.Enrichment.k">
+<tt class="descname">k</tt><a class="headerlink" href="#bright.enrichment.Enrichment.k" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is an integer in zzaaam-form that represents the kth key component.
+This nuclide is preferentially enriched in the waste stream.
+For standard uranium cascades k is 922380 (ie U-238).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.Enrichment.xP_j">
+<tt class="descname">xP_j</tt><a class="headerlink" href="#bright.enrichment.Enrichment.xP_j" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the target enrichment of the jth isotope in the
+product stream mat_prod.  The <img class="math" src="../_images/math/c345ae65331c66e7804b04d6ef3b6dbc6f186421.png" alt="x^P_j"/> value is set by 
+the user at initialization or run-time.  For typical uranium 
+vectors, this value is about U-235 = 0.05.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.Enrichment.xW_j">
+<tt class="descname">xW_j</tt><a class="headerlink" href="#bright.enrichment.Enrichment.xW_j" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the target enrichment of the jth isotope in the
+waste stream ms_tail.  The <img class="math" src="../_images/math/1ca5c7f4db1a97a19fd92dbbab8f203fc6a5a76c.png" alt="x^W_j"/> value is set by the 
+user at initialization or runtime.  For typical uranium vectors,
+this value is about U-235 = 0.0025.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.Enrichment.N">
+<tt class="descname">N</tt><a class="headerlink" href="#bright.enrichment.Enrichment.N" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the number of enriching stages present in an ideal cascade.
+Along with Mstar and M, this number is optimized to ensure that a product 
+enrichment of xP_j is attained.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.Enrichment.M">
+<tt class="descname">M</tt><a class="headerlink" href="#bright.enrichment.Enrichment.M" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the number of stripping stages present in an ideal cascade.
+Along with Mstar and N, this number is optimized to ensure that a waste 
+enrichment of xW_j is attained.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.Enrichment.N0">
+<tt class="descname">N0</tt><a class="headerlink" href="#bright.enrichment.Enrichment.N0" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the number of enriching stages initially guessed by the user.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.Enrichment.M0">
+<tt class="descname">M0</tt><a class="headerlink" href="#bright.enrichment.Enrichment.M0" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the number of stripping stages initially guessed by the user.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.Enrichment.TotalPerFeed">
+<tt class="descname">TotalPerFeed</tt><a class="headerlink" href="#bright.enrichment.Enrichment.TotalPerFeed" title="Permalink to this definition">¶</a></dt>
+<dd><p>This represents the total flow rate of the cascade divided by the 
+feed flow rate.  As such, it shows the mass of material needed in the
+cascade to enrich an additional kilogram of feed.  Symbolically,
+the total flow rate is given as <img class="math" src="../_images/math/859ccf4cd60c7bc6b8fa1afc9a42dc811a826d6f.png" alt="L"/> while the feed rate is
+<img class="math" src="../_images/math/a055f405829e64a3b70253ab67cb45ed6ed5bb29.png" alt="F"/>.  Therefore, this quantity is sometimes seen as &#8216;L-over-F&#8217;
+or as &#8216;L/F&#8217;.  TotalPerFeed is the value that is minimized to form an 
+optimized cascade.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.Enrichment.SWUperFeed">
+<tt class="descname">SWUperFeed</tt><a class="headerlink" href="#bright.enrichment.Enrichment.SWUperFeed" title="Permalink to this definition">¶</a></dt>
+<dd><p>This value denotes the number of separative work units (SWU) required
+per kg of feed for the specified cascade.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.Enrichment.SWUperProduct">
+<tt class="descname">SWUperProduct</tt><a class="headerlink" href="#bright.enrichment.Enrichment.SWUperProduct" title="Permalink to this definition">¶</a></dt>
+<dd><p>This value is the number of separative work units (SWU) required
+to produce 1 [kg] of product in the specified cascade.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.enrichment.Enrichment.initialize">
+<tt class="descname">initialize</tt><big>(</big><em>enrich_params</em><big>)</big><a class="headerlink" href="#bright.enrichment.Enrichment.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>The initialize method takes an enrichment parameter object and sets
+the corresponding Enrichment attributes to the same value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>enrich_params</strong> : EnrichmentParameters</p>
+<blockquote class="last">
+<div><p>A class containing the values to (re-)initialize an Enrichment cascade with.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.enrichment.Enrichment.calc">
+<tt class="descname">calc</tt><big>(</big><em>input=None</em><big>)</big><a class="headerlink" href="#bright.enrichment.Enrichment.calc" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method performs an optimization calculation on M* and solves for 
+appropriate values for all Enrichment attributes.  This includes the 
+product and waste streams flowing out of the the cascade as well.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>input</strong> : dict or Material or None, optional</p>
+<blockquote>
+<div><p>If input is present, it is set as the component&#8217;s mat_feed.  If input is 
+a nuclide mapping (zzaaam keys, float values), it is first converted into a 
+Material before being set as mat_feed.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>output</strong> : Material</p>
+<blockquote class="last">
+<div><p>mat_prod</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.enrichment.Enrichment.calc_params">
+<tt class="descname">calc_params</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.enrichment.Enrichment.calc_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>This sets the Enrichment parameters to the following 
+values:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;MassFeed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_feed</span><span class="o">.</span><span class="n">mass</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;MassFeed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;MassProduct&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;MassProduct&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_prod</span><span class="o">.</span><span class="n">mass</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;MassTails&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;MassTails&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_tail</span><span class="o">.</span><span class="n">mass</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;N&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;N&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;M&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;M&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;Mstar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Mstar</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;Mstar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Mstar</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;TotalPerFeed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TotalPerFeed</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;TotalPerFeed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TotalPerFeed</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;SWUperFeed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SWUperFeed</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;SWUperFeed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;SWUperProduct&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;SWUperProduct&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SWUperProduct</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.enrichment.Enrichment.PoverF">
+<tt class="descname">PoverF</tt><big>(</big><em>x_F</em>, <em>x_P</em>, <em>x_W</em><big>)</big><a class="headerlink" href="#bright.enrichment.Enrichment.PoverF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves for the product over feed enrichment ratio.</p>
+<div class="math">
+<p><img src="../_images/math/771f46fb4d3f34a44fef37074aaf8d371e620405.png" alt="\frac{p}{f} = \frac{(x_F - x_W)}{(x_P - x_W)}" /></p>
+</div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>x_F</strong> : float</p>
+<blockquote>
+<div><p>Feed enrichment.</p>
+</div></blockquote>
+<p><strong>x_P</strong> : float</p>
+<blockquote>
+<div><p>Product enrichment.</p>
+</div></blockquote>
+<p><strong>x_W</strong> : float</p>
+<blockquote>
+<div><p>Waste enrichment.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>pfratio</strong> : float</p>
+<blockquote class="last">
+<div><p>As calculated above.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.enrichment.Enrichment.WoverF">
+<tt class="descname">WoverF</tt><big>(</big><em>x_F</em>, <em>x_P</em>, <em>x_W</em><big>)</big><a class="headerlink" href="#bright.enrichment.Enrichment.WoverF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves for the waste over feed enrichment ratio.</p>
+<div class="math">
+<p><img src="../_images/math/68a3b88d709a2a8519f76c97fb169f97fae9104f.png" alt="\frac{p}{f} = \frac{(x_F - x_P)}{(x_W - x_P)}" /></p>
+</div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>x_F</strong> : float</p>
+<blockquote>
+<div><p>Feed enrichment.</p>
+</div></blockquote>
+<p><strong>x_P</strong> : float</p>
+<blockquote>
+<div><p>Product enrichment.</p>
+</div></blockquote>
+<p><strong>x_W</strong> : float</p>
+<blockquote>
+<div><p>Waste enrichment.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>wfratio</strong> : float</p>
+<blockquote class="last">
+<div><p>As calculated above.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="the-enrichmentparameters-class">
+<h2>The EnrichmentParameters Class<a class="headerlink" href="#the-enrichmentparameters-class" title="Permalink to this headline">¶</a></h2>
+<p>Enrichment has one major helper class, EnrichmentParameters, which
+aids in specifying the inputs necessary for the multi-component cascade
+model to run.</p>
+<dl class="class">
+<dt id="bright.enrichment.EnrichmentParameters">
+<em class="property">class </em><tt class="descclassname">bright.enrichment.</tt><tt class="descname">EnrichmentParameters</tt><a class="headerlink" href="#bright.enrichment.EnrichmentParameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class is a collection of values that mirror the attributes in 
+Enrichment that are required for the cascade model to run. Like 
+ReactorParameters, this class takes no arguments on initialization.  An 
+empty ErichmentParameters instance has all values set to zero.</p>
+<dl class="attribute">
+<dt id="bright.enrichment.EnrichmentParameters.alpha_0">
+<tt class="descname">alpha_0</tt><a class="headerlink" href="#bright.enrichment.EnrichmentParameters.alpha_0" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <img class="math" src="../_images/math/2e91bbbe6d9d3befa4e1a622257816568b108b00.png" alt="\alpha_0"/> attribute specifies the overall stage separation factor
+for the cascade.  This should be set on initialization.  Values should be
+greater than one.  Values less than one represent de-enrichment.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.EnrichmentParameters.Mstar_0">
+<tt class="descname">Mstar_0</tt><a class="headerlink" href="#bright.enrichment.EnrichmentParameters.Mstar_0" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <img class="math" src="../_images/math/04e5c99bb53600f442e367f66345938b968a1c6b.png" alt="M^*_0"/> represents a first guess at what the <cite>Mstar</cite> should be.
+The value of Mstar_0 on initialization should be in the ballpark
+of the optimized result of the Mstar attribute.  However, <img class="math" src="../_images/math/04e5c99bb53600f442e367f66345938b968a1c6b.png" alt="M^*_0"/> must
+always have a value between the weights of the j and k key components.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.EnrichmentParameters.j">
+<tt class="descname">j</tt><a class="headerlink" href="#bright.enrichment.EnrichmentParameters.j" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is an integer in zzaaam-form that represents the jth key component.
+This nuclide is preferentially enriched in the product stream.
+For standard uranium cascades j is 922350 (ie U-235).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.EnrichmentParameters.k">
+<tt class="descname">k</tt><a class="headerlink" href="#bright.enrichment.EnrichmentParameters.k" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is an integer in zzaaam-form that represents the kth key component.
+This nuclide is preferentially enriched in the waste stream.
+For standard uranium cascades k is 922380 (ie U-238).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.EnrichmentParameters.xP_j">
+<tt class="descname">xP_j</tt><a class="headerlink" href="#bright.enrichment.EnrichmentParameters.xP_j" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the target enrichment of the jth isotope in the
+product stream mat_prod.  The <img class="math" src="../_images/math/c345ae65331c66e7804b04d6ef3b6dbc6f186421.png" alt="x^P_j"/> value is set by 
+the user at initialization or run-time.  For typical uranium 
+vectors, this value is about U-235 = 0.05.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.EnrichmentParameters.xW_j">
+<tt class="descname">xW_j</tt><a class="headerlink" href="#bright.enrichment.EnrichmentParameters.xW_j" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the target enrichment of the jth isotope in the
+waste stream ms_tail.  The <img class="math" src="../_images/math/1ca5c7f4db1a97a19fd92dbbab8f203fc6a5a76c.png" alt="x^W_j"/> value is set by the 
+user at initialization or runtime.  For typical uranium vectors,
+this value is about U-235 = 0.0025.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.EnrichmentParameters.N0">
+<tt class="descname">N0</tt><a class="headerlink" href="#bright.enrichment.EnrichmentParameters.N0" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the number of enriching stages initially guessed by the user.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.enrichment.EnrichmentParameters.M0">
+<tt class="descname">M0</tt><a class="headerlink" href="#bright.enrichment.EnrichmentParameters.M0" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the number of stripping stages initially guessed by the user.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="enrichment-helper-functions">
+<h2>Enrichment Helper Functions<a class="headerlink" href="#enrichment-helper-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bright.enrichment.uranium_enrichment_defaults">
+<tt class="descclassname">bright.enrichment.</tt><tt class="descname">uranium_enrichment_defaults</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.enrichment.uranium_enrichment_defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns a new EnrichmentParameters instance which 
+holds sensible initial values a urnaium enrichment cascade.</p>
+<p>The values of this instance of EnrichmentParameters are as
+follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ued</span> <span class="o">=</span> <span class="n">bright</span><span class="o">.</span><span class="n">enrichment</span><span class="o">.</span><span class="n">EnrichmentParameters</span><span class="p">()</span>
+
+<span class="n">ued</span><span class="o">.</span><span class="n">alpha_0</span> <span class="o">=</span> <span class="mf">1.05</span>
+<span class="n">ued</span><span class="o">.</span><span class="n">Mstar_0</span> <span class="o">=</span> <span class="mf">236.5</span>
+
+<span class="n">ued</span><span class="o">.</span><span class="n">j</span> <span class="o">=</span> <span class="mi">922350</span>
+<span class="n">ued</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="mi">922380</span>
+
+<span class="n">ued</span><span class="o">.</span><span class="n">xP_j</span> <span class="o">=</span> <span class="mf">0.05</span>
+<span class="n">ued</span><span class="o">.</span><span class="n">xW_j</span> <span class="o">=</span> <span class="mf">0.0025</span>
+
+<span class="n">ued</span><span class="o">.</span><span class="n">N0</span> <span class="o">=</span> <span class="mf">30.0</span>
+<span class="n">ued</span><span class="o">.</span><span class="n">M0</span> <span class="o">=</span> <span class="mf">10.0</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>ued</strong> : EnrichmentParameters</p>
+<blockquote class="last">
+<div><p>As defined above.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/BrightIconSmall.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Enrichment</a><ul>
+<li><a class="reference internal" href="#the-enrichment-class">The Enrichment Class</a></li>
+<li><a class="reference internal" href="#the-enrichmentparameters-class">The EnrichmentParameters Class</a></li>
+<li><a class="reference internal" href="#enrichment-helper-functions">Enrichment Helper Functions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="fccomp.html"
+                        title="previous chapter">FCComp Class</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="fuel_fabrication.html"
+                        title="next chapter">Fuel Fabrication Class</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/libref/enrichment.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="fuel_fabrication.html" title="Fuel Fabrication Class"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="fccomp.html" title="FCComp Class"
+             >previous</a> |</li>
+        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008 - 2011, Anthony Scopatz.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,150 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Notes for Developers &mdash; bright v0.6 documentation</title>
+    <link rel="stylesheet" href="../_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="bright v0.6 documentation" href="../index.html" />
+    <link rel="up" title="User’s Guide" href="index.html" />
+    <link rel="next" title="Library Reference" href="../libref/index.html" />
+    <link rel="prev" title="Writing Custom Components" href="custom.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../libref/index.html" title="Library Reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="custom.html" title="Writing Custom Components"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">User&#8217;s Guide</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="notes-for-developers">
+<h1>Notes for Developers<a class="headerlink" href="#notes-for-developers" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="notes-for-windows-developers">
+<span id="win-devnotes"></span><h2>Notes for Windows Developers<a class="headerlink" href="#notes-for-windows-developers" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Windows development is deprecated. Enter at your own risk, ye brave souls!</p>
+</div>
+<p>The following is a recipe for getting a bright development environment setup in a Windows environment.
+First, make sure that you have the following programs installed with the appropriate versions:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><a class="reference external" href="http://www.python.org/download/">Python 2.7</a></li>
+<li>A unix compatible editor, like <a class="reference external" href="http://editra.org/download">Editra</a></li>
+<li><a class="reference external" href="http://code.google.com/p/msysgit/">(Git, if you want to connect to the repository)</a></li>
+<li>Microsoft Visual Studio (2008, not 2010)</li>
+<li><a class="reference external" href="http://www.hdfgroup.org/HDF5/">HDF5</a></li>
+<li><a class="reference external" href="http://numpy.scipy.org/">NumPy</a></li>
+<li><a class="reference external" href="http://scipy.org/">SciPy</a></li>
+<li><a class="reference external" href="http://matplotlib.sourceforge.net/">MatPlotLib</a></li>
+<li><a class="reference external" href="http://pyne.github.com/pyne/">PyNE</a></li>
+<li><a class="reference external" href="http://www.pytables.org/">PyTables</a></li>
+</ol>
+</div></blockquote>
+<p>You will need to add HDF5 location information to the environment. Thus you&#8217;ll need to set the
+<tt class="docutils literal"><span class="pre">LIB</span></tt> and <tt class="docutils literal"><span class="pre">INCLUDE</span></tt> environmental variables to something similar to the following:</p>
+<div class="highlight-python"><pre>LIB     += C:\hdf5\lib
+INCLUDE += C:\hdf5\include</pre>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/BrightIconSmall.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Notes for Developers</a><ul>
+<li><a class="reference internal" href="#notes-for-windows-developers">Notes for Windows Developers</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="custom.html"
+                        title="previous chapter">Writing Custom Components</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../libref/index.html"
+                        title="next chapter">Library Reference</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/usersguide/devnotes.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../libref/index.html" title="Library Reference"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="custom.html" title="Writing Custom Components"
+             >previous</a> |</li>
+        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+          <li><a href="index.html" >User&#8217;s Guide</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008 - 2011, Anthony Scopatz.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,192 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Storage Class &mdash; bright v0.6 documentation</title>
+    <link rel="stylesheet" href="../_static/altered_nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="bright v0.6 documentation" href="../index.html" />
+    <link rel="up" title="Library Reference" href="index.html" />
+    <link rel="prev" title="Reprocess Class" href="reprocess.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="reprocess.html" title="Reprocess Class"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="storage-class">
+<span id="bright-storage"></span><h1>Storage Class<a class="headerlink" href="#storage-class" title="Permalink to this headline">¶</a></h1>
+<p>The storage class very simply solves the Bateman decay equations on an input mass stream.  For a more complete
+treatment please see Stacey&#8217;s
+<a class="reference external" href="http://www.amazon.com/Nuclear-Reactor-Physics-Weston-Stacey/dp/0471391271">Nuclear Reactor Physics</a>.
+Currently, the storage component uses a recursive method to calculate the decay chains and resultant masses.</p>
+<p>To use this class the necessary decay information must be available.  This is stored in a <tt class="docutils literal"><span class="pre">decay.h5</span></tt> database
+that must be present within the <cite>BRIGHT_DATA</cite> directory.   Instantiation of this class automatically calls
+the initialize() method on the C++ level, which loads the <tt class="docutils literal"><span class="pre">decay.h5</span></tt> library.</p>
+<p>All functionality may be found in the <tt class="docutils literal"><span class="pre">storage</span></tt> module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">bright.storage</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="bright.storage.Storage">
+<em class="property">class </em><tt class="descclassname">bright.storage.</tt><tt class="descname">Storage</tt><a class="headerlink" href="#bright.storage.Storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Storage Fuel Cycle Component Class.  Daughter of FCComp class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name</strong> : str, optional</p>
+<blockquote class="last">
+<div><p>The name of the storage fuel cycle component instance.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="bright.storage.Storage.decay_time">
+<tt class="descname">decay_time</tt><a class="headerlink" href="#bright.storage.Storage.decay_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>This the float (double) attribute that represents how long an input fuel mass should be
+stored for.  This time is represented in seconds, so be sure to convert to the proper units
+before using.  Consider using pyne.utils.to_sec() for second conversions.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.storage.Storage.track_params">
+<tt class="descname">track_params</tt><a class="headerlink" href="#bright.storage.Storage.track_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>For <a class="reference internal" href="#bright.storage.Storage" title="bright.storage.Storage"><tt class="xref py py-class docutils literal"><span class="pre">Storage</span></tt></a>, the only parameter that is tracked is the aggregate mass.
+Thus this attribute is automatically set to <tt class="docutils literal"><span class="pre">[&quot;Mass&quot;]</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.storage.Storage.calc">
+<tt class="descname">calc</tt><big>(</big><em>input=None</em>, <em>time=None</em><big>)</big><a class="headerlink" href="#bright.storage.Storage.calc" title="Permalink to this definition">¶</a></dt>
+<dd><p>As usual, calc sets up the Storage component&#8217;s input stream and calculates the corresponding 
+output Material.  Here, this amounts to calling bateman() for every nuclide in 
+mat_feed, for each chain that ends with a nuclide in track_nucs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>input</strong> : dict or Material or None, optional</p>
+<blockquote>
+<div><p>If input is present, it set as the component&#8217;s mat_feed.  If input is a isotopic dictionary 
+(zzaaam keys, float values), this dictionary is first converted into a Material before being 
+set as mat_feed.</p>
+</div></blockquote>
+<p><strong>decay_time</strong> : float or None, optional</p>
+<blockquote>
+<div><p>decay_time is set to the time value here prior to any other calculations.  This time has units 
+of seconds.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>output</strong> : Material</p>
+<blockquote class="last">
+<div><p>mat_prod</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.storage.Storage.calc_params">
+<tt class="descname">calc_params</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.storage.Storage.calc_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Here the parameters for Storage are set.  For storage, this amounts to just
+a &#8220;Mass&#8221; parameter:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;Mass&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_feed</span><span class="o">.</span><span class="n">mass</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;Mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_prod</span><span class="o">.</span><span class="n">mass</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/BrightIconSmall.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="reprocess.html"
+                        title="previous chapter">Reprocess Class</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/libref/storage.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="reprocess.html" title="Reprocess Class"
+             >previous</a> |</li>
+        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2008 - 2011, Anthony Scopatz.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
