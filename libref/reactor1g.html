@@ -1,18 +1,24 @@
 
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Reactor1G Class &mdash; bright v0.6 documentation</title>
-    <link rel="stylesheet" href="../_static/altered_nature.css" type="text/css" />
+    <title>Reactor1G Class &mdash; bright 0.6-dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/cloud.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.6',
+        VERSION:     '0.6-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,12 +27,17 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="bright v0.6 documentation" href="../index.html" />
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="top" title="bright 0.6-dev documentation" href="../index.html" />
     <link rel="up" title="Library Reference" href="index.html" />
     <link rel="next" title="Fluence Point Class" href="fluence_point.html" />
     <link rel="prev" title="Reactor Parameters" href="reactor_parameters.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
+    <div class="relbar-top">
+        
     <div class="related">
       <h3>Navigation</h3>
       <ul>
@@ -34,15 +45,24 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
           <a href="fluence_point.html" title="Fluence Point Class"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
         <li class="right" >
           <a href="reactor_parameters.html" title="Reactor Parameters"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">bright 0.6-dev documentation</a> &raquo;</li>
+
           <li><a href="index.html" accesskey="U">Library Reference</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+    </div>
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -76,975 +96,6 @@ out to be relatively simple since most of the computational effort is in Reactor
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">bright.reactor1g</span>
 </pre></div>
 </div>
-<dl class="class">
-<dt id="bright.reactor1g.Reactor1G">
-<em class="property">class </em><tt class="descclassname">bright.reactor1g.</tt><tt class="descname">Reactor1G</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G" title="Permalink to this definition">¶</a></dt>
-<dd><p>One-Group Reactor Fuel Cycle Component Class.  Daughter of FCComp class.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>reactor_parameters</strong> : ReactorParameters, optional</p>
-<blockquote>
-<div><p>A special data structure that contains information on how to setup and run the reactor.</p>
-</div></blockquote>
-<p><strong>track_params</strong> : string set, optional</p>
-<blockquote>
-<div><p>A set of strings that represents what parameter data the reactor should store and set.  
-Different reactor types may have different characteristic parameters of interest.</p>
-</div></blockquote>
-<p><strong>name</strong> : str, optional</p>
-<blockquote class="last">
-<div><p>The name of the reactor fuel cycle component instance.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>Some data members and functions have names that end in &#8216;_F_&#8217;.  This indicates that these are a 
-function of fluence, the time integral of the flux.  The &#8216;_Fd_&#8217; suffix implies that the data is 
-evaluated at the discharge fluence.</p>
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.B">
-<tt class="descname">B</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.B" title="Permalink to this definition">¶</a></dt>
-<dd><p>This integer is the total number of batches in the fuel management scheme.  
-B is typically indexed by b.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.phi">
-<tt class="descname">phi</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.phi" title="Permalink to this definition">¶</a></dt>
-<dd><p>The nominal flux value (float) that the library for this reactor type was generated with.  
-Used to correctly weight batch-specific fluxes.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.fuel_chemical_form">
-<tt class="descname">fuel_chemical_form</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.fuel_chemical_form" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is the chemical form of fuel as a dictionary or other mapping.  Keys are 
-often strings that represent isotopes while values represent the corresponding 
-mass weights.  The heavy metal concentration by the key &#8220;IHM&#8221;.  
-This will automatically fill in the nuclides in mat_feed for the &#8220;IHM&#8221; weight.  
-For example, LWRs typically use a UOX fuel form:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">Reactor1G</span><span class="o">.</span><span class="n">fuel_chemical_form</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;IHM&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s">&quot;O16&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.coolant_chemical_form">
-<tt class="descname">coolant_chemical_form</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.coolant_chemical_form" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is the chemical form of coolant as a dictionary or other mapping.  
-This uses the same notation as fuel_form except that &#8220;IHM&#8221; is no longer 
-a valid key.  The term &#8216;coolant&#8217; is used in preference over the term 
-&#8216;moderator&#8217; because not all reactors moderate neutrons.  For example, 
-LWRs often cool the reactor core with borated water:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">ReactorParamters</span><span class="o">.</span><span class="n">coolant_form</span> <span class="o">=</span> <span class="p">{}</span>
-
-<span class="n">ReactorParamters</span><span class="o">.</span><span class="n">coolant_form</span><span class="p">[</span><span class="s">&quot;H1&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">2.0</span>
-<span class="n">ReactorParamters</span><span class="o">.</span><span class="n">coolant_form</span><span class="p">[</span><span class="s">&quot;O16&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="n">ReactorParamters</span><span class="o">.</span><span class="n">coolant_form</span><span class="p">[</span><span class="s">&quot;B10&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.199</span> <span class="o">*</span> <span class="mi">550</span> <span class="o">*</span> <span class="mf">10.0</span><span class="o">**-</span><span class="mi">6</span>
-<span class="n">ReactorParamters</span><span class="o">.</span><span class="n">coolant_form</span><span class="p">[</span><span class="s">&quot;B11&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.801</span> <span class="o">*</span> <span class="mi">550</span> <span class="o">*</span> <span class="mf">10.0</span><span class="o">**-</span><span class="mi">6</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.rhoF">
-<tt class="descname">rhoF</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.rhoF" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fuel region density.  A float in units of [g/cm^3].</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.rhoC">
-<tt class="descname">rhoC</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.rhoC" title="Permalink to this definition">¶</a></dt>
-<dd><p>The coolant region density.  A float in units of [g/cm^3].</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.P_NL">
-<tt class="descname">P_NL</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.P_NL" title="Permalink to this definition">¶</a></dt>
-<dd><p>The reactor&#8217;s non-leakage probability (float).  This is often used as a calibration parameter.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.target_BU">
-<tt class="descname">target_BU</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.target_BU" title="Permalink to this definition">¶</a></dt>
-<dd><p>The reactor&#8217;s target discharge burnup (float).  This is given 
-in units of [MWd/kgIHM].  Often the actual discharge burnup BUd does not 
-quite hit this value, but comes acceptably close.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.use_zeta">
-<tt class="descname">use_zeta</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.use_zeta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Boolaean to determine whether the thermal disadvantage factor is employed or not.  
-LWRs typically set this as True while FRs have a False value.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.lattice_flag">
-<tt class="descname">lattice_flag</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.lattice_flag" title="Permalink to this definition">¶</a></dt>
-<dd><p>Flag (str) that represents what lattice type the fuel assemblies are arranged in.  
-Currently accepted values are &#8220;Planar&#8221;, &#8220;Spherical&#8221;, and &#8220;Cylindrical&#8221;.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.rescale_hydrogen_xs">
-<tt class="descname">rescale_hydrogen_xs</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.rescale_hydrogen_xs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Boolean to determine whether the reactor should rescale the Hydrogen-1 destruction 
-rate in the coolant as a function of fluence.  The scaling factor is calculated via the 
-following equation</p>
-<blockquote>
-<div><div class="math">
-<p><img src="../_images/math/6689e079e8ff0012d073701b945fc812a4c1ea43.png" alt="f(F) = 1.36927 - 0.01119 \cdot BU(F)" /></p>
-</div></div></blockquote>
-<p>This is typically not done for fast reactors but is a useful correction for LWRs.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.r">
-<tt class="descname">r</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.r" title="Permalink to this definition">¶</a></dt>
-<dd><p>The radius (float) of the fuel region [cm].</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.l">
-<tt class="descname">l</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.l" title="Permalink to this definition">¶</a></dt>
-<dd><p>The pitch or length (float) of the unit fuel pin cell [cm].</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.S_O">
-<tt class="descname">S_O</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.S_O" title="Permalink to this definition">¶</a></dt>
-<dd><p>The number of slots (float) in a fuel assembly that are open.  Thus this is the 
-number of slots that do not contain a fuel pin and are instead filled in by coolant.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.S_T">
-<tt class="descname">S_T</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.S_T" title="Permalink to this definition">¶</a></dt>
-<dd><p>The total number of fuel pin slots (float) in a fuel assembly.  For a 17x17 bundle 
-this is 289.0.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.VF">
-<tt class="descname">VF</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.VF" title="Permalink to this definition">¶</a></dt>
-<dd><p>The relative fuel region volume.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.VC">
-<tt class="descname">VC</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.VC" title="Permalink to this definition">¶</a></dt>
-<dd><p>The relative coolant region volume.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.libfile">
-<tt class="descname">libfile</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.libfile" title="Permalink to this definition">¶</a></dt>
-<dd><p>The path (str) to the reactor data library; usually something like &#8220;LWR.h5&#8221; or &#8220;FR.h5&#8221;.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.F">
-<tt class="descname">F</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.F" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fluence points that the reactor library is based on.  This is a vector of floats that 
-have units [n/kb].  This is read in from libfile.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.BUi_F_">
-<tt class="descname">BUi_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.BUi_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The burnup of each initial isotope in the core as a function of fluence.  This is a dictionary whose
-keys are initial nuclides and whose values are vectors of floats.  This data has units of [MWd/kgIHM] 
-and is read in from libfile.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.pi_F_">
-<tt class="descname">pi_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.pi_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The neutron production rate of each initial isotope in the core as a function of fluence.  
-This is a dictionary whose keys are initial nuclides and whose values are vectors of floats.  
-This data has units of [neutrons/seconds] (abbr [n/s]) is read in from libfile.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.di_F_">
-<tt class="descname">di_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.di_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The neutron destruction rate of each initial isotope in the core as a function of fluence. 
-This is a dictionary whose keys are initial nuclides and whose values are vectors of floats.  
-This data has units of [n/s] and is read in from libfile.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.Tij_F_">
-<tt class="descname">Tij_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.Tij_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The transmutation matrix of each initial isotope in the core into daughter nuclides as a 
-function of fluence. This is a dictionary whose keys are initial nuclides and whose values 
-also dictionaries.  These nested dictionaries have keys that are final nuclides and whose 
-values are vectors of floats.  This data has units of [kg_i/kgIHM] or kilogram of each initial 
-nuclide per kg of total initial heavy metal. This matrix is read in from libfile.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.A_IHM">
-<tt class="descname">A_IHM</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.A_IHM" title="Permalink to this definition">¶</a></dt>
-<dd><p>The atomic weight of the initial heavy metal (float).</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.MWF">
-<tt class="descname">MWF</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.MWF" title="Permalink to this definition">¶</a></dt>
-<dd><p>The molecular weight of the fuel (float).</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.MWC">
-<tt class="descname">MWC</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.MWC" title="Permalink to this definition">¶</a></dt>
-<dd><p>The molecular weight of the coolant (float).</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.niF">
-<tt class="descname">niF</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.niF" title="Permalink to this definition">¶</a></dt>
-<dd><p>Atomic number weight of the fuel as a function of initial nuclide. 
-Map with zzaaam-integer keys and float values.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.niC">
-<tt class="descname">niC</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.niC" title="Permalink to this definition">¶</a></dt>
-<dd><p>Atomic number weight of the coolant as a function of initial nuclide.  
-Map with zzaaam-integer keys and float values.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.miF">
-<tt class="descname">miF</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.miF" title="Permalink to this definition">¶</a></dt>
-<dd><p>Mass weight of the fuel as a function of initial nuclide.  
-Map with zzaaam-integer keys and float values.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.miC">
-<tt class="descname">miC</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.miC" title="Permalink to this definition">¶</a></dt>
-<dd><p>Mass weight of the coolant as a function of initial nuclide.  
-Map with zzaaam-integer keys and float values.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.NiF">
-<tt class="descname">NiF</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.NiF" title="Permalink to this definition">¶</a></dt>
-<dd><p>Number density of the fuel as a function of initial nuclide.  
-Map with zzaaam-integer keys and float values.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.NiC">
-<tt class="descname">NiC</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.NiC" title="Permalink to this definition">¶</a></dt>
-<dd><p>Number density of the coolant as a function of initial nuclide.  
-Map with zzaaam-integer keys and float values.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.dF_F_">
-<tt class="descname">dF_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.dF_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The neutron destruction rate [n/s] of the fuel as a function of fluence.  
-This is the linear combination of <tt class="docutils literal"><span class="pre">di_F_</span></tt> for all initial nuclides using miF as weights.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.dC_F_">
-<tt class="descname">dC_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.dC_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The neutron destruction rate [n/s] of the coolant as a function of fluence.  
-This is the linear combination of <tt class="docutils literal"><span class="pre">di_F_</span></tt> for all initial nuclides using miC as weights.  
-If the disadvantage factor is used, then <tt class="docutils literal"><span class="pre">zeta_F_</span></tt> is multiplied by the linear combination 
-before being assigned to <tt class="docutils literal"><span class="pre">dC_F_</span></tt>.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.BU_F_">
-<tt class="descname">BU_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.BU_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The reactor burnup [MWd/kgIHM] as a function of fluence.  This is the linear
-combination of <tt class="docutils literal"><span class="pre">BUi_F_</span></tt> for all initial nuclides using miF as weights.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.P_F_">
-<tt class="descname">P_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.P_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The full-core neutron production rate [n/s] as a function of fluence.  This is the linear
-combination of <tt class="docutils literal"><span class="pre">pi_F_</span></tt> for all initial nuclides using miF as weights. (Note: the coolant does 
-not have a production rate). The linear combination is subsequently multiplied by the 
-non-leakage probability, P_NL, before being assigned to <tt class="docutils literal"><span class="pre">P_F_</span></tt>.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.D_F_">
-<tt class="descname">D_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.D_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The full-core neutron destruction rate [n/s] a function of fluence.  This is the
-sum of <tt class="docutils literal"><span class="pre">dF_F_</span></tt> and <tt class="docutils literal"><span class="pre">dC_F_</span></tt>.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.k_F_">
-<tt class="descname">k_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.k_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The multiplication factor of the core.  Calculated from <tt class="docutils literal"><span class="pre">P_F_</span></tt> divided by <tt class="docutils literal"><span class="pre">D_F_</span></tt>.  
-This attribute is unitless and not often used.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.Mj_F_">
-<tt class="descname">Mj_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.Mj_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The transmutation matrix of the fuel (specifically, mat_feed) into the jth nuclide 
-as a function of fluence.  Used with the discharge fluence Fd to calculate mat_prod.  
-This object is therefore a dictionary from zzaaam-integers to vectors of floats.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.zeta_F_">
-<tt class="descname">zeta_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.zeta_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The thermal disadvantage factor as a function of fluence.  This attribute is unitless 
-and is set when calc_zeta is called.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.fd">
-<tt class="descname">fd</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.fd" title="Permalink to this definition">¶</a></dt>
-<dd><p>The lower index of the discharge fluence (int).</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.Fd">
-<tt class="descname">Fd</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.Fd" title="Permalink to this definition">¶</a></dt>
-<dd><p>The discharge fluence [n/kb] (float).  May be used to calculate the amount of time 
-that the fuel was irradiated.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.BUd">
-<tt class="descname">BUd</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.BUd" title="Permalink to this definition">¶</a></dt>
-<dd><p>The discharge burnup [MWd/kgIHM] (float).  Unless something went very wrong,
-this should be rather close in value to target_BU.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.k">
-<tt class="descname">k</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.k" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is the multiplication factor of the reactor at discharge.  This should be very close 
-in value to 1.0.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.mat_feed_u">
-<tt class="descname">mat_feed_u</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.mat_feed_u" title="Permalink to this definition">¶</a></dt>
-<dd><p>The input uranium material, mat_feed.sub_u().</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.mat_feed_tru">
-<tt class="descname">mat_feed_tru</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.mat_feed_tru" title="Permalink to this definition">¶</a></dt>
-<dd><p>The input transuranic material, mat_feed.sub_tru().</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.mat_feed_lan">
-<tt class="descname">mat_feed_lan</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.mat_feed_lan" title="Permalink to this definition">¶</a></dt>
-<dd><p>The input lanthanide material, mat_feed.sub_lan().</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.mat_feed_act">
-<tt class="descname">mat_feed_act</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.mat_feed_act" title="Permalink to this definition">¶</a></dt>
-<dd><p>The input actininide material, mat_feed.sub_act().</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.mat_prod_u">
-<tt class="descname">mat_prod_u</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.mat_prod_u" title="Permalink to this definition">¶</a></dt>
-<dd><p>The output urnaium material, mat_prod.sub_u().</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.mat_prod_tru">
-<tt class="descname">mat_prod_tru</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.mat_prod_tru" title="Permalink to this definition">¶</a></dt>
-<dd><p>The output transuranic material, mat_prod.sub_tru().</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.mat_prod_lan">
-<tt class="descname">mat_prod_lan</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.mat_prod_lan" title="Permalink to this definition">¶</a></dt>
-<dd><p>The output lanthanide material, mat_prod.sub_lan().</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.mat_prod_act">
-<tt class="descname">mat_prod_act</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.mat_prod_act" title="Permalink to this definition">¶</a></dt>
-<dd><p>The output actininide material, mat_prod.sub_act().</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.deltaR">
-<tt class="descname">deltaR</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.deltaR" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <img class="math" src="../_images/math/54a4250f367ce0b8542a9368e68ef0d4a575db8c.png" alt="\delta R"/> value of the core with the current mat_feed.  This is equal 
-to the production rate minus the destruction rate at the target burnup:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">deltaR</span> <span class="o">=</span> <span class="n">batch_average</span><span class="p">(</span><span class="n">target_BU</span><span class="p">,</span> <span class="s">&quot;P&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">batch_average</span><span class="p">(</span><span class="n">target_BU</span><span class="p">,</span> <span class="s">&quot;D&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>This is computed via the calc_deltaR() method.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.tru_cr">
-<tt class="descname">tru_cr</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.tru_cr" title="Permalink to this definition">¶</a></dt>
-<dd><p>The transuranic conversion ratio of the reactor (float).  
-This is set via the calc_tru_cr() method.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.SigmaFa_F_">
-<tt class="descname">SigmaFa_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.SigmaFa_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fuel macroscopic absorption cross section [1/cm].</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.SigmaFtr_F_">
-<tt class="descname">SigmaFtr_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.SigmaFtr_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fuel macroscopic transport cross section [1/cm].</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.kappaF_F_">
-<tt class="descname">kappaF_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.kappaF_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>One over the thermal diffusion length of the fuel [1/cm].</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.SigmaCa_F_">
-<tt class="descname">SigmaCa_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.SigmaCa_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The coolant macroscopic absorption cross section [1/cm].</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.SigmaCtr_F_">
-<tt class="descname">SigmaCtr_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.SigmaCtr_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The coolant macroscopic transport cross section [1/cm].</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.kappaC_F_">
-<tt class="descname">kappaC_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.kappaC_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>One over the thermal diffusion length of the coolant [1/cm].</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.lattice_E_F_">
-<tt class="descname">lattice_E_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.lattice_E_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The lattice function E(F).</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor1g.Reactor1G.lattice_F_F_">
-<tt class="descname">lattice_F_F_</tt><a class="headerlink" href="#bright.reactor1g.Reactor1G.lattice_F_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>The lattice function F(F).</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.initialize">
-<tt class="descname">initialize</tt><big>(</big><em>reactor_parameters</em><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.initialize" title="Permalink to this definition">¶</a></dt>
-<dd><p>The initialize() method for reactors copies all of the reactor specific parameters to this instance.
-Additionally, it calculates and sets the volumes VF and VC.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>reactor_parameters</strong> : ReactorParameters</p>
-<blockquote class="last">
-<div><p>A special data structure that contains information on how to setup and run the reactor.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.loadlib">
-<tt class="descname">loadlib</tt><big>(</big><em>libfile=&quot;reactor.h5&quot;</em><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.loadlib" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method finds the HDF5 library for this reactor and extracts the necessary information from it.
-This method is typically called by the constructor of the child reactor type object.  It must be 
-called before attempting to do any real computation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>libfile</strong> : str</p>
-<blockquote class="last">
-<div><p>Path to the reactor library.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.fold_mass_weights">
-<tt class="descname">fold_mass_weights</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.fold_mass_weights" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method performs the all-important task of doing the isotopically-weighted linear combination 
-of raw data.  In a very real sense this is what makes this reactor <em>this specific reactor</em>.  The weights 
-are taken as the values of mat_feed.  The raw data must have previously been read in from loadlib().</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Anytime any reactor parameter whatsoever (mat_feed, P_NL, <em>etc</em>) is altered in any way, 
-the fold_mass_weights() function must be called to reset all of the resultant data.
-If you are unsure, please call this function anyway to be safe.  There is no harm in calling 
-this method multiple times.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.calc_Mj_F_">
-<tt class="descname">calc_Mj_F_</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.calc_Mj_F_" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function calculates and sets the <tt class="docutils literal"><span class="pre">Mj_F_</span></tt> attribute from mat_feed and the 
-raw reactor data <tt class="docutils literal"><span class="pre">Tij_F_</span></tt>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.calc_Mj_Fd_">
-<tt class="descname">calc_Mj_Fd_</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.calc_Mj_Fd_" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function evaluates <tt class="docutils literal"><span class="pre">Mj_F_</span></tt> calculated from calc_Mj_F_() at the discharge fluence Fd.
-The resultant isotopic dictionary is then converted into the mat_prod mass stream
-for this pass through the reactor.  Thus if ever you need to calculate mat_prod
-without going through calc(), use this function.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.calc_mat_prod">
-<tt class="descname">calc_mat_prod</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.calc_mat_prod" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is a convenience function that wraps the transmutation matrix methods.  
-It is equivalent to:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c">#Wrapper to calculate discharge isotopics.</span>
-<span class="n">calc_Mj_F_</span><span class="p">()</span>
-<span class="n">calc_Mj_Fd_</span><span class="p">()</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.calc_sub_mats">
-<tt class="descname">calc_sub_mats</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.calc_sub_mats" title="Permalink to this definition">¶</a></dt>
-<dd><p>This sets possibly relevant reactor input and output sub-materials.  Specifically, 
-it computes the attributes:</p>
-<blockquote>
-<div><ul class="simple">
-<li>mat_feed_u</li>
-<li>mat_feed_tru</li>
-<li>mat_feed_lan</li>
-<li>mat_feed_act</li>
-<li>mat_prod_u</li>
-<li>mat_prod_tru</li>
-<li>mat_prod_lan</li>
-<li>mat_prod_act</li>
-</ul>
-</div></blockquote>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.calc_tru_cr">
-<tt class="descname">calc_tru_cr</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.calc_tru_cr" title="Permalink to this definition">¶</a></dt>
-<dd><p>This calculates and sets the transuranic conversion ratio tru_cr through the equation:</p>
-<div class="math">
-<p><img src="../_images/math/e00371291750cac0c5eb128f2c2be5f532a70848.png" alt="\mbox{tru\_cr} = 1.0 - \frac{\mbox{mat\_feed\_tru.mass} - \mbox{mat\_prod\_tru.mass}}{\frac{\mbox{BUd}}{935.0}}" /></p>
-</div><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>tru_cr</strong> : float)</p>
-<blockquote class="last">
-<div><p>The value of the transuranic conversion ratio just calculated.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.calc_deltaR">
-<tt class="descname">calc_deltaR</tt><big>(</big><em>input=None</em><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.calc_deltaR" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates and sets the deltaR value of the reactor.  This is equal to the 
-production rate minus the destruction rate at the target burnup:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">deltaR</span> <span class="o">=</span> <span class="n">batch_average</span><span class="p">(</span><span class="n">target_BU</span><span class="p">,</span> <span class="s">&quot;P&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">batch_average</span><span class="p">(</span><span class="n">target_BU</span><span class="p">,</span> <span class="s">&quot;D&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>input</strong> : dict or Material or None, optional</p>
-<blockquote>
-<div><p>If input is present, it set as the component&#8217;s mat_feed.  If input is a isotopic 
-dictionary (zzaaam keys, float values), this dictionary is first converted into a 
-Material before being set as mat_feed.</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>deltaR</strong> : float</p>
-<blockquote class="last">
-<div><p>deltaR value</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.fluence_at_BU">
-<tt class="descname">fluence_at_BU</tt><big>(</big><em>burnup</em><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.fluence_at_BU" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function takes a burnup value  and returns a special fluence point object.  
-The fluence point is an amalgamation of data where the at which the burnup occurs.
-This object instance FP contains three pieces of information:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">FP</span><span class="o">.</span><span class="n">f</span>    <span class="c">#Index immediately lower than where BU achieved (int)</span>
-<span class="n">FP</span><span class="o">.</span><span class="n">F</span>    <span class="c">#Fluence value itself (float)</span>
-<span class="n">FP</span><span class="o">.</span><span class="n">m</span>    <span class="c">#Slope dBU/dF between points f and f+1 (double)</span>
-</pre></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>burnup</strong> : float</p>
-<blockquote>
-<div><p>Burnup [MWd/kgIHM] at which to calculate the corresponding fluence.</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>fp</strong> : FluencePoint</p>
-<blockquote class="last">
-<div><p>A class containing fluence information.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.batch_average">
-<tt class="descname">batch_average</tt><big>(</big><em>BUd</em>, <em>PDk_flag=&quot;K&quot;</em><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.batch_average" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds the batch-averaged P(F), D(F), or k(F) when at discharge burnup BUd.
-This function is typically iterated over until a BUd is found such that k(F) = 1.0 + err.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>BUd</strong> : float</p>
-<blockquote>
-<div><p>The discharge burnup [MWd/kgIHM] to obtain a batch-averaged value for.</p>
-</div></blockquote>
-<p><strong>PDk_flag</strong> : str , optional</p>
-<blockquote>
-<div><p>Flag that determines whether the neutron production rate &#8220;P&#8221; [n/s],  the neutron destruction 
-rate &#8220;D&#8221; [n/s], or the multiplication factor &#8220;K&#8221; is reported in the output.</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>PDk</strong> : float</p>
-<blockquote class="last">
-<div><p>The batch averaged neutron production rate, neutron destruction rate, or the multiplication 
-factor as determined by the input flag.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.batch_average_k">
-<tt class="descname">batch_average_k</tt><big>(</big><em>BUd</em><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.batch_average_k" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convenience function that calls batch_average(BUd, &#8220;K&#8221;).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>BUd</strong> : float</p>
-<blockquote>
-<div><p>The discharge burnup [MWd/kgIHM] to obtain a batch-averaged value for.</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>k</strong> : float</p>
-<blockquote class="last">
-<div><p>The batch averaged multiplication factor.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.BUd_bisection_method">
-<tt class="descname">BUd_bisection_method</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.BUd_bisection_method" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the maximum discharge burnup via the Bisection Method for a given mat_feed
-in this reactor.  This iterates over values of BUd to find a batch averaged multiplication factor 
-that is closest to 1.0.</p>
-<p>Other root finding methods for determining maximum discharge burnup are certainly possible.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.run_P_NL">
-<tt class="descname">run_P_NL</tt><big>(</big><em>pnl</em><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.run_P_NL" title="Permalink to this definition">¶</a></dt>
-<dd><p>Performs a reactor run for a specific non-leakage probability value.
-This requires that mat_feed be (meaningfully) set and is for use with calibrate_P_NL_to_BUd().</p>
-<p>This function amounts to the following code:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">P_NL</span> <span class="o">=</span> <span class="n">pnl</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">fold_mass_weights</span><span class="p">()</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">BUd_bisection_method</span><span class="p">()</span>
-</pre></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>pnl</strong> : float</p>
-<blockquote class="last">
-<div><p>The new non-leakage probability for the reactor.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.calibrate_P_NL_to_BUd">
-<tt class="descname">calibrate_P_NL_to_BUd</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.calibrate_P_NL_to_BUd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Often times the non-leakage probability of a reactor is not known, though the input isotopics 
-and the target discharge burnup are.  This function handles that situation by
-calibrating the non-leakage probability of this reactor P_NL to hit its target burnup target_BU.
-Such a calibration proceeds by bisection method as well.  This function is extremely useful for 
-benchmarking calculations.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.calc">
-<tt class="descname">calc</tt><big>(</big><em>input=None</em><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.calc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Since many other methods provide the computational heavy-lifting of reactor calculations, 
-the calc() method is relatively simple:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">mat_feed</span> <span class="o">=</span> <span class="nb">input</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">fold_mass_weights</span><span class="p">()</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">BUd_bisection_method</span><span class="p">()</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">calc_mat_prod</span><span class="p">()</span>
-<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_prod</span>
-</pre></div>
-</div>
-<p>As you can see, all this function does is set burn an input stream to its maximum 
-discharge burnup and then reports on the output isotopics.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>input</strong> : dict or Material or None, optional</p>
-<blockquote>
-<div><p>If input is present, it set as the component&#8217;s mat_feed.  If input is a nuclide dictionary 
-(zzaaam keys, float values), this dictionary is first converted into a Material before being 
-set as mat_feed.</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>output</strong> : Material</p>
-<blockquote class="last">
-<div><p>mat_prod</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.lattice_E_planar">
-<tt class="descname">lattice_E_planar</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.lattice_E_planar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the lattice function E(F) for planar geometry.  Sets value as <tt class="docutils literal"><span class="pre">lattice_E_F_</span></tt>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>a</strong> : float</p>
-<blockquote>
-<div><p>Fuel region radius equivalent [cm].</p>
-</div></blockquote>
-<p><strong>b</strong> : float</p>
-<blockquote class="last">
-<div><p>Unit fuel cell pitch length equivalent [cm].</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.lattice_F_planar">
-<tt class="descname">lattice_F_planar</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.lattice_F_planar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the lattice function F(F) for planar geometry.  Sets value as <tt class="docutils literal"><span class="pre">lattice_F_F_</span></tt>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>a</strong> : float</p>
-<blockquote>
-<div><p>Fuel region radius equivalent [cm].</p>
-</div></blockquote>
-<p><strong>b</strong> : float</p>
-<blockquote class="last">
-<div><p>Unit fuel cell pitch length equivalent [cm].</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.lattice_E_spherical">
-<tt class="descname">lattice_E_spherical</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.lattice_E_spherical" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the lattice function E(F) for spherical geometry.  Sets value as <tt class="docutils literal"><span class="pre">lattice_E_F_</span></tt>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>a</strong> : float</p>
-<blockquote>
-<div><p>Fuel region radius equivalent [cm].</p>
-</div></blockquote>
-<p><strong>b</strong> : float</p>
-<blockquote class="last">
-<div><p>Unit fuel cell pitch length equivalent [cm].</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.lattice_F_spherical">
-<tt class="descname">lattice_F_spherical</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.lattice_F_spherical" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the lattice function F(F) for spherical geometry.  Sets value as <tt class="docutils literal"><span class="pre">lattice_F_F_</span></tt>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>a</strong> : float</p>
-<blockquote>
-<div><p>Fuel region radius equivalent [cm].</p>
-</div></blockquote>
-<p><strong>b</strong> : float</p>
-<blockquote class="last">
-<div><p>Unit fuel cell pitch length equivalent [cm].</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.lattice_E_cylindrical">
-<tt class="descname">lattice_E_cylindrical</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.lattice_E_cylindrical" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the lattice function E(F) for cylindrical geometry.  Sets value as <tt class="docutils literal"><span class="pre">lattice_E_F_</span></tt>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>a</strong> : float</p>
-<blockquote>
-<div><p>Fuel region radius equivalent [cm].</p>
-</div></blockquote>
-<p><strong>b</strong> : float</p>
-<blockquote class="last">
-<div><p>Unit fuel cell pitch length equivalent [cm].</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.lattice_F_cylindrical">
-<tt class="descname">lattice_F_cylindrical</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.lattice_F_cylindrical" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the lattice function F(F) for cylindrical geometry.  Sets value as <tt class="docutils literal"><span class="pre">lattice_F_F_</span></tt>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>a</strong> : float</p>
-<blockquote>
-<div><p>Fuel region radius equivalent [cm].</p>
-</div></blockquote>
-<p><strong>b</strong> : float</p>
-<blockquote class="last">
-<div><p>Unit fuel cell pitch length equivalent [cm].</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.calc_zeta">
-<tt class="descname">calc_zeta</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.calc_zeta" title="Permalink to this definition">¶</a></dt>
-<dd><p>This calculates the thermal disadvantage factor for the geometry specified by lattice_flag.  
-The results are set to <tt class="docutils literal"><span class="pre">zeta_F_</span></tt>.  This is ostensibly done via the methodology detailed in Lamarsh&#8217;s 
-<a class="reference external" href="http://www.amazon.com/Introduction-Nuclear-Reactor-Theory-Lamarsh/dp/0894480405">Nuclear Reactor Theory</a>.</p>
-<p>Unfortunately, this formulation for the disadvantage factor is <strong>only</strong> valid in the case 
-where a &lt;&lt; b! Often times, modern (thermal) reactors do not satisfy this requirement.  We 
-instead have a &#8216;thin moderator&#8217;situation.</p>
-<p>To fix this problem properly requires going to a multi-region diffusion/transport calculation.
-Doing so is beyond the scope of Bright at this time and certainly beyond the aspirations of a
-one-group methodology.  A strategy that is more in-line with current practice is to use the 
-results of a more sophisticated method, interpolate over them, and use them here.</p>
-<p>Thus in the case where 0.1 &lt; VF/VC, where the fuel is greater than 10% of the coolant, the
-above strategy is what is implemented. A baseline disadvantage factor is determined from 
-data presented in &#8220;<em>Thermal disadvantage factor calculation by the multi-region collision 
-probability method</em>&#8221; by B. Ozgener,  and H. A. Ozgener, Institute of Nuclear Energy, Istanbul 
-Technical University 80626 Maslak, Istanbul, Turkey, Received 28 January 2003; accepted 20 May 2003.  
-Available online 6 March 2004.  This baseline value happens to be a function of VF/VC.</p>
-<p>The Lamarsh method is then used as a scaling factor on the baseline function to
-account for variations in fuel composition and fluence.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.calc_zeta_planar">
-<tt class="descname">calc_zeta_planar</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.calc_zeta_planar" title="Permalink to this definition">¶</a></dt>
-<dd><p>This calculates the thermal disadvantage factor for a planar geometry.  The results
-are set to <tt class="docutils literal"><span class="pre">zeta_F_</span></tt>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.calc_zeta_spherical">
-<tt class="descname">calc_zeta_spherical</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.calc_zeta_spherical" title="Permalink to this definition">¶</a></dt>
-<dd><p>This calculates the thermal disadvantage factor for a spherical geometry.  The results
-are set to <tt class="docutils literal"><span class="pre">zeta_F_</span></tt>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.reactor1g.Reactor1G.calc_zeta_cylindrical">
-<tt class="descname">calc_zeta_cylindrical</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.reactor1g.Reactor1G.calc_zeta_cylindrical" title="Permalink to this definition">¶</a></dt>
-<dd><p>This calculates the thermal disadvantage factor for a clyindrical geometry.  The results
-are set to <tt class="docutils literal"><span class="pre">zeta_F_</span></tt>.</p>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 
 
@@ -1053,9 +104,9 @@ are set to <tt class="docutils literal"><span class="pre">zeta_F_</span></tt>.</
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/BrightIconSmall.png" alt="Logo"/>
-            </a></p>
+        <p class="logo"><a href="../index.html">
+          <img class="logo" src="../_static/BrightIconSmall.png" alt="Logo"/>
+        </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="reactor_parameters.html"
                         title="previous chapter">Reactor Parameters</a></p>
@@ -1070,7 +121,7 @@ are set to <tt class="docutils literal"><span class="pre">zeta_F_</span></tt>.</
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -1084,6 +135,8 @@ are set to <tt class="docutils literal"><span class="pre">zeta_F_</span></tt>.</
       </div>
       <div class="clearer"></div>
     </div>
+    <div class="relbar-bottom">
+        
     <div class="related">
       <h3>Navigation</h3>
       <ul>
@@ -1091,18 +144,28 @@ are set to <tt class="docutils literal"><span class="pre">zeta_F_</span></tt>.</
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
           <a href="fluence_point.html" title="Fluence Point Class"
-             >next</a> |</li>
+             >next</a> &nbsp; &nbsp;</li>
         <li class="right" >
           <a href="reactor_parameters.html" title="Reactor Parameters"
-             >previous</a> |</li>
-        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">bright 0.6-dev documentation</a> &raquo;</li>
+
           <li><a href="index.html" >Library Reference</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2008 - 2011, Anthony Scopatz.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
+
+    <div class="footer">
+        &copy; Copyright 2008 - 2013, Anthony Scopatz.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
   </body>
 </html>

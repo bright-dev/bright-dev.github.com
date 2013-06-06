@@ -1,18 +1,24 @@
 
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Fast Reactor1G Class &mdash; bright v0.6 documentation</title>
-    <link rel="stylesheet" href="../_static/altered_nature.css" type="text/css" />
+    <title>Fast Reactor1G Class &mdash; bright 0.6-dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/cloud.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.6',
+        VERSION:     '0.6-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,12 +27,17 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="bright v0.6 documentation" href="../index.html" />
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="top" title="bright 0.6-dev documentation" href="../index.html" />
     <link rel="up" title="Library Reference" href="index.html" />
     <link rel="next" title="ReactorMG Class" href="reactormg.html" />
     <link rel="prev" title="Light Water Reactor1G Class" href="light_water_reactor1g.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
+    <div class="relbar-top">
+        
     <div class="related">
       <h3>Navigation</h3>
       <ul>
@@ -34,15 +45,24 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
           <a href="reactormg.html" title="ReactorMG Class"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
         <li class="right" >
           <a href="light_water_reactor1g.html" title="Light Water Reactor1G Class"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">bright 0.6-dev documentation</a> &raquo;</li>
+
           <li><a href="index.html" accesskey="U">Library Reference</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+    </div>
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -60,75 +80,6 @@ Lastly, this document displays a benchmark of this FR model to other published F
 </div>
 <div class="section" id="fastreactor1g-class">
 <h2>FastReactor1G Class<a class="headerlink" href="#fastreactor1g-class" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="bright.fast_reactor1g.FastReactor1G">
-<em class="property">class </em><tt class="descclassname">bright.fast_reactor1g.</tt><tt class="descname">FastReactor1G</tt><a class="headerlink" href="#bright.fast_reactor1g.FastReactor1G" title="Permalink to this definition">¶</a></dt>
-<dd><p>A One-Group Fast Reactor Fuel Cycle Component.  This is a daughter class of Reactor1G and 
-a granddaughter of FCComp.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>libfile</strong> : str, optional</p>
-<blockquote>
-<div><p>The path the the FR HDF5 data library.  This value is set to Reactor1G.libfile and 
-used by Reactor1G.loadlib().</p>
-</div></blockquote>
-<p><strong>reactor_parameters</strong> : ReactorParameters, optional</p>
-<blockquote>
-<div><p>The physical reactor parameter data to initialize this FR instance with.  If this argument 
-is not provided, default values are taken.</p>
-</div></blockquote>
-<p><strong>name</strong> : str, optional</p>
-<blockquote class="last">
-<div><p>The name of this FR instance.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
-<dt id="bright.fast_reactor1g.FastReactor1G.track_params">
-<tt class="descname">track_params</tt><a class="headerlink" href="#bright.fast_reactor1g.FastReactor1G.track_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fast reactors have a type specific set of data that they follow from
-pass-to-pass.  Thus this attribute has be modified to contain following parameters:
-<tt class="docutils literal"><span class="pre">[&quot;BUd&quot;,</span> <span class="pre">&quot;TRUCR&quot;,</span> <span class="pre">&quot;P_NL&quot;,</span> <span class="pre">&quot;U&quot;,</span> <span class="pre">&quot;TRU&quot;,</span> <span class="pre">&quot;ACT&quot;,</span> <span class="pre">&quot;LAN&quot;,</span> <span class="pre">&quot;FP&quot;]</span></tt>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.fast_reactor1g.FastReactor1G.calc_params">
-<tt class="descname">calc_params</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.fast_reactor1g.FastReactor1G.calc_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Along with its own parameter set to track, the FR model implements its own function to set these
-parameters.  This function is equivalent to the following:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;BUd&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">0.0</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;BUd&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BUd</span>
-
-<span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;TRUCR&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">0.0</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;TRUCR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_tru_cr</span><span class="p">()</span>
-
-<span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;P_NL&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">0.0</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;P_NL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">P_NL</span>
-
-<span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;U&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_feed_u</span><span class="o">.</span><span class="n">mass</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;U&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_prod_u</span><span class="o">.</span><span class="n">mass</span>
-
-<span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;TRU&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_feed_tru</span><span class="o">.</span><span class="n">mass</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;TRU&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_prod_tru</span><span class="o">.</span><span class="n">mass</span>
-
-<span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;ACT&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_feed_act</span><span class="o">.</span><span class="n">mass</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;ACT&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_prod_act</span><span class="o">.</span><span class="n">mass</span>
-
-<span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;LAN&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_feed_lan</span><span class="o">.</span><span class="n">mass</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;LAN&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_prod_lan</span><span class="o">.</span><span class="n">mass</span>
-
-<span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;FP&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_feed_act</span><span class="o">.</span><span class="n">mass</span>  <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_feed_lan</span><span class="o">.</span><span class="n">mass</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;FP&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_prod_act</span><span class="o">.</span><span class="n">mass</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_prod_lan</span><span class="o">.</span><span class="n">mass</span>
-</pre></div>
-</div>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 <div class="section" id="fast-reactor-benchmark">
 <h2>Fast Reactor Benchmark<a class="headerlink" href="#fast-reactor-benchmark" title="Permalink to this headline">¶</a></h2>
@@ -315,9 +266,10 @@ CS137      4.625001E-03   5.675473E-03   -1.050472E-03  5.150237E-03   5.252360E
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/BrightIconSmall.png" alt="Logo"/>
-            </a></p>
+        <p class="logo"><a href="../index.html">
+          <img class="logo" src="../_static/BrightIconSmall.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Fast Reactor1G Class</a><ul>
@@ -331,6 +283,7 @@ CS137      4.625001E-03   5.675473E-03   -1.050472E-03  5.150237E-03   5.252360E
 </li>
 </ul>
 
+  </div>
   <h4>Previous topic</h4>
   <p class="topless"><a href="light_water_reactor1g.html"
                         title="previous chapter">Light Water Reactor1G Class</a></p>
@@ -345,7 +298,7 @@ CS137      4.625001E-03   5.675473E-03   -1.050472E-03  5.150237E-03   5.252360E
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -359,6 +312,8 @@ CS137      4.625001E-03   5.675473E-03   -1.050472E-03  5.150237E-03   5.252360E
       </div>
       <div class="clearer"></div>
     </div>
+    <div class="relbar-bottom">
+        
     <div class="related">
       <h3>Navigation</h3>
       <ul>
@@ -366,18 +321,28 @@ CS137      4.625001E-03   5.675473E-03   -1.050472E-03  5.150237E-03   5.252360E
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
           <a href="reactormg.html" title="ReactorMG Class"
-             >next</a> |</li>
+             >next</a> &nbsp; &nbsp;</li>
         <li class="right" >
           <a href="light_water_reactor1g.html" title="Light Water Reactor1G Class"
-             >previous</a> |</li>
-        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">bright 0.6-dev documentation</a> &raquo;</li>
+
           <li><a href="index.html" >Library Reference</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2008 - 2011, Anthony Scopatz.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
+
+    <div class="footer">
+        &copy; Copyright 2008 - 2013, Anthony Scopatz.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
   </body>
 </html>

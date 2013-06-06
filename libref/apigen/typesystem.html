@@ -1,0 +1,562 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Type System &mdash; bright 0.6-dev documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/cloud.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.6-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="top" title="bright 0.6-dev documentation" href="../../index.html" />
+    <link rel="up" title="API Generation" href="index.html" />
+    <link rel="next" title="Automatic Descriptions" href="autodescribe.html" />
+    <link rel="prev" title="API Generation" href="index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <div class="relbar-top">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="autodescribe.html" title="Automatic Descriptions"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="index.html" title="API Generation"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">bright 0.6-dev documentation</a> &raquo;</li>
+
+          <li><a href="../index.html" >Library Reference</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API Generation</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-bright.apigen.typesystem">
+<span id="type-system"></span><span id="bright-apigen-typesystem"></span><h1>Type System<a class="headerlink" href="#module-bright.apigen.typesystem" title="Permalink to this headline">¶</a></h1>
+<p>Implements a simple, dynamic type system for API generation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Anthony Scopatz &lt;<a class="reference external" href="mailto:scopatz&#37;&#52;&#48;gmail&#46;com">scopatz<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This module provides a suite of tools for denoting, describing, and converting
+between various data types and the types coming from various systems.  This is
+achieved by providing canonical abstractions of various kinds of types:</p>
+<ul class="simple">
+<li>Base types (int, str, float, non-templated classes)</li>
+<li>Refined types (even or odd ints, strings containing the letter &#8216;a&#8217;)</li>
+<li>Dependent types (templates such arrays, maps, sets, vectors)</li>
+</ul>
+<p>All types are known by their name (a string identifier) and may be aliased with 
+other names.  However, the string id of a type is not sufficient to fully describe
+most types.  The system here implements a canonical form for all kinds of types.
+This canonical form is itself hashable, being comprised only of strings, ints, 
+and tuples.</p>
+<div class="section" id="canonical-forms">
+<h3>Canonical Forms<a class="headerlink" href="#canonical-forms" title="Permalink to this headline">¶</a></h3>
+<p>First, let us examine the base types and the forms that they may take.  Base types
+are fiducial.  The type system itself may not make any changes (refinements, 
+template filling) to types of this kind.  They are basically a collection of bits.
+(The job of ascribing meaning to these bits falls on someone else.)  Thus base types 
+may be referred to simply by their string identifier.  For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="s">&#39;str&#39;</span>
+<span class="s">&#39;int32&#39;</span>
+<span class="s">&#39;float64&#39;</span>
+<span class="s">&#39;MyClass&#39;</span>
+</pre></div>
+</div>
+<p>Aliases to these &#8211; or any &#8211; type names are given in the type_aliases dictionary:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">type_aliases</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;i&#39;</span><span class="p">:</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span>
+    <span class="s">&#39;i4&#39;</span><span class="p">:</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span>
+    <span class="s">&#39;int&#39;</span><span class="p">:</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span>
+    <span class="s">&#39;complex&#39;</span><span class="p">:</span> <span class="s">&#39;complex128&#39;</span><span class="p">,</span>
+    <span class="s">&#39;b&#39;</span><span class="p">:</span> <span class="s">&#39;bool&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p>Furthermore, length-2 tuples are used to denote a type and the name or flag of its
+predicate.  A predicate is a function or transformation that may be applied to 
+verify, validate, cast, coerce, or extend a variable of the given type.  A common 
+usage is to declare a pointer or reference of the underlying type.  This is done with 
+the string flags &#8216;*&#8217; and &#8216;&amp;&#8217;:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="s">&#39;char&#39;</span><span class="p">,</span> <span class="s">&#39;*&#39;</span><span class="p">)</span>
+<span class="p">(</span><span class="s">&#39;float64&#39;</span><span class="p">,</span> <span class="s">&#39;&amp;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If the predicate is a positive integer, then this is interpreted as a 
+homogeneous array of the underlying type with the given length.  If this length 
+is zero, then the tuple is often interpreted as a scalar of this type, equivalent 
+to the type itself.  The length-0 scalar interpretation depends on context.  Here 
+are some examples of array types:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="s">&#39;char&#39;</span><span class="p">,</span> <span class="mi">42</span><span class="p">)</span>  <span class="c"># length-42 character array</span>
+<span class="p">(</span><span class="s">&#39;bool&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>   <span class="c"># length-1 boolean array</span>
+<span class="p">(</span><span class="s">&#39;f8&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>     <span class="c"># scalar 64-bit float</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">length-1 tuples are converted to length-2 tuples with a 0 predicate, 
+i.e. <tt class="docutils literal"><span class="pre">('char',)</span></tt> will become <tt class="docutils literal"><span class="pre">('char',</span> <span class="pre">0)</span></tt>.</p>
+</div>
+<p>The next kind of type are <strong>refinement types</strong> or <strong>refined types</strong>.  A refined type
+is a sub-type of another type but restricts in some way what constitutes a valid 
+element.  For example, if we first take all integers, the set of all positive 
+integers is a refinement of the original.  Similarly, starting with all possible
+strings the set of all strings starting with &#8216;A&#8217; is a refinement.</p>
+<p>In the system here, refined types are given their own unique names (e.g. &#8216;posint&#8217; 
+and &#8216;astr&#8217;).  The type system has a mapping (<tt class="docutils literal"><span class="pre">refined_types</span></tt>) from all refinement
+type names to the names of their super-type.  The user may refer to refinement types
+simply by their string name.  However the canonical form refinement types is to use
+the refinement as the predicate of the super-type in a length-2 tuple, as above:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="s">&#39;posint&#39;</span><span class="p">)</span>  <span class="c"># refinement of integers to positive ints</span>
+<span class="p">(</span><span class="s">&#39;str&#39;</span><span class="p">,</span> <span class="s">&#39;astr&#39;</span><span class="p">)</span>      <span class="c"># refinement of strings to str starting with &#39;A&#39;</span>
+</pre></div>
+</div>
+<p>It is these refinement types that give the second index in the tuple its &#8216;predicate&#8217;
+name.  Additionally, the predicate is used to look up the converter and validation
+functions in when doing code generation or type verification.</p>
+<p>The last kind of type are known as <strong>dependent types</strong> or <strong>template types</strong>, 
+similar in concept to C++ template classes.  These are meta-types whose 
+instantiation requires one or more parameters to be filled in by further values or
+types. Dependent types may nest with themselves or other dependent types.  Fully 
+qualifying a template type requires the resolution of all dependencies.</p>
+<p>Classic examples of dependent types include the C++ template classes.  These take
+other types as their dependencies.  Other cases may require only values as 
+their dependencies.  For example, suppose we want to restrict integers to various
+ranges.  Rather than creating a refinement type for every combination of integer
+bounds, we can use a single &#8216;intrange&#8217; type that defines high and low dependencies.</p>
+<p>The <tt class="docutils literal"><span class="pre">template_types</span></tt> mapping takes the dependent type names (e.g. &#8216;map&#8217;)
+to a tuple of their dependency names (&#8216;key&#8217;, &#8216;value&#8217;).   The <tt class="docutils literal"><span class="pre">refined_types</span></tt> 
+mapping also accepts keys that are tuples of the following form:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="s">&#39;&lt;type name&gt;&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;dep0-name&gt;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;dep1-name&#39;</span><span class="p">,</span> <span class="s">&#39;dep1-type&#39;</span><span class="p">),</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that template names may be reused as types of other template parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;dep0-name&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;dep1-name&#39;</span><span class="p">,</span> <span class="s">&#39;dep0-name&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>As we have seen, dependent
+types may either be base types (when based off of template classes), refined types,
+or both.  Their canonical form thus follows the rules above with some additional 
+syntax.  The first element of the tuple is still the type name and the last 
+element is still the predicate (default 0).  However the type tuples now have a
+length equal to 2 plus the number of dependencies.  These dependencies are 
+placed between the name and the predicate: <tt class="docutils literal"><span class="pre">('&lt;name&gt;',</span> <span class="pre">&lt;dep0&gt;,</span> <span class="pre">...,</span> <span class="pre">&lt;predicate&gt;)</span></tt>.
+These dependencies, of course, may be other type names or tuples!  Let&#8217;s see
+some examples.</p>
+<p>In the simplest case, take analogies to C++ template classes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="s">&#39;set&#39;</span><span class="p">,</span> <span class="s">&#39;complex128&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="p">(</span><span class="s">&#39;map&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="s">&#39;float64&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="p">(</span><span class="s">&#39;map&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="s">&#39;posint&#39;</span><span class="p">),</span> <span class="s">&#39;float64&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="p">(</span><span class="s">&#39;map&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="s">&#39;posint&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;set&#39;</span><span class="p">,</span> <span class="s">&#39;complex128&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now consider the intrange type from above.  This has the following definition and
+canonical form:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">refined_types</span> <span class="o">=</span> <span class="p">{(</span><span class="s">&#39;intrange&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;low&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;high&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">)):</span> <span class="s">&#39;int32&#39;</span><span class="p">}</span>
+
+<span class="c"># range from 1 -&gt; 2</span>
+<span class="p">(</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;intrange&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;low&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;high&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+
+<span class="c"># range from -42 -&gt; 42</span>
+<span class="p">(</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;intrange&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;low&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">42</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;high&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="mi">42</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>Note that the low and high dependencies here are length three tuples of the form
+<tt class="docutils literal"><span class="pre">('&lt;dep-name&gt;',</span> <span class="pre">&lt;dep-type&gt;,</span> <span class="pre">&lt;dep-value&gt;)</span></tt>.  How the dependency values end up 
+being used is solely at the discretion of the implementation.  These values may
+be anything, though they are most useful when they are easily convertible into 
+strings in the target language.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Do not confuse length-3 dependency tuples with length-3 type tuples!  
+The last element here is a value, not a predicate.</p>
+</div>
+<p>Next, consider a &#8216;range&#8217; type which behaves similarly to &#8216;intrange&#8217; except that
+it also accepts the type as dependency.  This has the following definition and
+canonical form:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">refined_types</span> <span class="o">=</span> <span class="p">{(</span><span class="s">&#39;range&#39;</span><span class="p">,</span> <span class="s">&#39;vtype&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;low&#39;</span><span class="p">,</span> <span class="s">&#39;vtype&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;high&#39;</span><span class="p">,</span> <span class="s">&#39;vtype&#39;</span><span class="p">)):</span> <span class="s">&#39;vtype&#39;</span><span class="p">}</span>
+
+<span class="c"># integer range from 1 -&gt; 2</span>
+<span class="p">(</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;range&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;low&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;high&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>    
+
+<span class="c"># positive integer range from 42 -&gt; 65</span>
+<span class="p">((</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="s">&#39;posint&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;range&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="s">&#39;posint&#39;</span><span class="p">),</span>
+                                <span class="p">(</span><span class="s">&#39;low&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="s">&#39;posint&#39;</span><span class="p">),</span> <span class="mi">42</span><span class="p">),</span>
+                                <span class="p">(</span><span class="s">&#39;high&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="s">&#39;posint&#39;</span><span class="p">),</span> <span class="mi">65</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="shorthand-forms">
+<h3>Shorthand Forms<a class="headerlink" href="#shorthand-forms" title="Permalink to this headline">¶</a></h3>
+<p>The canonical forms for types contain all the information needed to fully describe
+different kinds of types.  However, as human-facing code, they can be exceedingly 
+verbose.  Therefore there are number of shorthand techniques that may be used to 
+also denote the various types.  Converting from these shorthands to the fully
+expanded version may be done via the the <tt class="docutils literal"><span class="pre">canon(t)</span></tt> function.  This function
+takes a single type and returns the canonical form of that type.  The following
+are operations that <tt class="docutils literal"><span class="pre">canon()</span></tt>  performs:</p>
+<ul>
+<li><p class="first">Base type are returned as their name:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">canon</span><span class="p">(</span><span class="s">&#39;str&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s">&#39;str&#39;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Aliases are resolved:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">canon</span><span class="p">(</span><span class="s">&#39;f4&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s">&#39;float32&#39;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Expands length-1 tuples to scalar predicates:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;int32&#39;</span><span class="p">,)</span>
+<span class="n">canon</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Determines the super-type of refinements:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">canon</span><span class="p">(</span><span class="s">&#39;posint&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="s">&#39;posint&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Applies templates:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;set&#39;</span><span class="p">,</span> <span class="s">&#39;float&#39;</span><span class="p">)</span>
+<span class="n">canon</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s">&#39;set&#39;</span><span class="p">,</span> <span class="s">&#39;float64&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Applies dependencies:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;intrange&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">canon</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;intrange&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;low&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;high&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;range&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">canon</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;range&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;low&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;high&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Performs all of the above recursively:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">t</span> <span class="o">=</span> <span class="p">((</span><span class="s">&#39;map&#39;</span><span class="p">,</span> <span class="s">&#39;posint&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;set&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;intrange&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))),)</span>
+<span class="n">canon</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">==</span> <span class="p">((</span><span class="s">&#39;map&#39;</span><span class="p">,</span> 
+             <span class="p">(</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="s">&#39;posint&#39;</span><span class="p">),</span>  
+             <span class="p">(</span><span class="s">&#39;set&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;int32&#39;</span><span class="p">,</span> 
+                <span class="p">(</span><span class="s">&#39;intrange&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;low&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;high&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">))),</span> <span class="mi">0</span><span class="p">)),</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>These shorthands are thus far more useful and intuitive than canonical form described
+above.  It is therefore recommended that users and developers write code that uses
+the shorter versions, Note that <tt class="docutils literal"><span class="pre">canon()</span></tt> is guaranteed to return strings, tuples, 
+and integers only &#8211; making the output of this function hashable.</p>
+</div>
+</div>
+<div class="section" id="type-system-api">
+<h2>Type System API<a class="headerlink" href="#type-system-api" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bright.apigen.typesystem.canon">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">canon</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.canon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns the type into its canonical form. See module docs for more information.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.cython_c2py">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">cython_c2py</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.cython_c2py" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a varibale name and type, returns cython code (declaration, body, 
+and return statements) to convert the variable from C/C++ to Python.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.cython_cimport_tuples">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">cython_cimport_tuples</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.cython_cimport_tuples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a type t, and possibily previously seen cimport tuples (set), 
+return the set of all seen cimport tuples.  These tuple have four possible 
+interpretations based on the length and values:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">(module-name,)</span></tt> becomes <tt class="docutils literal"><span class="pre">cimport</span> <span class="pre">{module-name}</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">(module-name,</span> <span class="pre">var-or-mod)</span></tt> becomes 
+<tt class="docutils literal"><span class="pre">from</span> <span class="pre">{module-name}</span> <span class="pre">cimport</span> <span class="pre">{var-or-mod}</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">(module-name,</span> <span class="pre">var-or-mod,</span> <span class="pre">alias)</span></tt> becomes 
+<tt class="docutils literal"><span class="pre">from</span> <span class="pre">{module-name}</span> <span class="pre">cimport</span> <span class="pre">{var-or-mod}</span> <span class="pre">as</span> <span class="pre">{alias}</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">(module-name,</span> <span class="pre">'as',</span> <span class="pre">alias)</span></tt> becomes <tt class="docutils literal"><span class="pre">cimport</span> <span class="pre">{module-name}</span> <span class="pre">as</span> <span class="pre">{alias}</span></tt></li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.cython_cimports">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">cython_cimports</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.cython_cimports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retuns the cimport lines associtated with a type or a set of seen tuples.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.cython_ctype">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">cython_ctype</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.cython_ctype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a type t, returns the cooresponding Cython C type declaration.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.cython_cytype">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">cython_cytype</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.cython_cytype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a type t, returns the cooresponding Cython type.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.cython_import_tuples">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">cython_import_tuples</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.cython_import_tuples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a type t, and possibily previously seen import tuples (set), 
+return the set of all seen import tuples.  These tuple have four possible 
+interpretations based on the length and values:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">(module-name,)</span></tt> becomes <tt class="docutils literal"><span class="pre">import</span> <span class="pre">{module-name}</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">(module-name,</span> <span class="pre">var-or-mod)</span></tt> becomes 
+<tt class="docutils literal"><span class="pre">from</span> <span class="pre">{module-name}</span> <span class="pre">import</span> <span class="pre">{var-or-mod}</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">(module-name,</span> <span class="pre">var-or-mod,</span> <span class="pre">alias)</span></tt> becomes 
+<tt class="docutils literal"><span class="pre">from</span> <span class="pre">{module-name}</span> <span class="pre">import</span> <span class="pre">{var-or-mod}</span> <span class="pre">as</span> <span class="pre">{alias}</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">(module-name,</span> <span class="pre">'as',</span> <span class="pre">alias)</span></tt> becomes <tt class="docutils literal"><span class="pre">import</span> <span class="pre">{module-name}</span> <span class="pre">as</span> <span class="pre">{alias}</span></tt></li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.cython_imports">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">cython_imports</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.cython_imports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retuns the import lines associtated with a type or a set of seen tuples.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.cython_nptype">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">cython_nptype</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.cython_nptype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a type t, returns the cooresponding NumPy type.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.cython_py2c">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">cython_py2c</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.cython_py2c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a varibale name and type, returns cython code (declaration, body, 
+and return statement) to convert the variable from Python to C/C++.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.cython_pytype">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">cython_pytype</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.cython_pytype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a type t, returns the cooresponding Python type.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.deregister_class">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">deregister_class</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.deregister_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will remove a previously registered class from the type system.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.deregister_refinement">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">deregister_refinement</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.deregister_refinement" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will remove a previously registered refinement from the type
+system.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.deregister_specialization">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">deregister_specialization</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.deregister_specialization" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will remove previously registered template specialization.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.isdependent">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">isdependent</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.isdependent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether t is a dependent type or not.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.isrefinement">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">isrefinement</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.isrefinement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether t is a refined type.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.istemplate">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">istemplate</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.istemplate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether t is a template type or not.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.register_class">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">register_class</tt><big>(</big><em>name</em>, <em>template_args=None</em>, <em>cython_c_type=None</em>, <em>cython_cimport=None</em>, <em>cython_cy_type=None</em>, <em>cython_py_type=None</em>, <em>cython_template_class_name=None</em>, <em>cython_cyimport=None</em>, <em>cython_pyimport=None</em>, <em>cython_c2py=None</em>, <em>cython_py2c=None</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.register_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Classes are user specified types.  This function will add a class to 
+the type system so that it may be used normally with the rest of the 
+type system.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.register_refinement">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">register_refinement</tt><big>(</big><em>name</em>, <em>refinementof</em>, <em>cython_cimport=None</em>, <em>cython_cyimport=None</em>, <em>cython_pyimport=None</em>, <em>cython_c2py=None</em>, <em>cython_py2c=None</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.register_refinement" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will add a refinement to the type system so that it may be used 
+normally with the rest of the type system.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.typesystem.register_specialization">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">register_specialization</tt><big>(</big><em>t</em>, <em>cython_c_type=None</em>, <em>cython_cy_type=None</em>, <em>cython_py_type=None</em>, <em>cython_cimport=None</em>, <em>cython_cyimport=None</em>, <em>cython_pyimport=None</em><big>)</big><a class="headerlink" href="#bright.apigen.typesystem.register_specialization" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will add a template specialization so that it may be used 
+normally with the rest of the type system.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="bright.apigen.typesystem.BASE_TYPES">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">BASE_TYPES</tt><em class="property"> = set(['uint64', 'int32', 'float64', 'void', 'complex128', 'char', 'int64', 'str', 'bool', 'uint32', 'float32'])</em><a class="headerlink" href="#bright.apigen.typesystem.BASE_TYPES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base types in the type system.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="bright.apigen.typesystem.refined_types">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">refined_types</tt><em class="property"> = {'nucid': 'int32', 'nucname': 'str'}</em><a class="headerlink" href="#bright.apigen.typesystem.refined_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a mapping from refinement type names to the parent types.
+The parent types may either be base types, compound types, template
+types, or other refined types!</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="bright.apigen.typesystem.template_types">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">template_types</tt><em class="property"> = {'pair': ('key_type', 'value_type'), 'map': ('key_type', 'value_type'), 'set': ('value_type',), 'dict': ('key_type', 'value_type'), 'vector': ('value_type',)}</em><a class="headerlink" href="#bright.apigen.typesystem.template_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Template types are types whose instantiations are based on meta-types.
+this dict maps their names to meta-type names in order.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="bright.apigen.typesystem.type_aliases">
+<tt class="descclassname">bright.apigen.typesystem.</tt><tt class="descname">type_aliases</tt><em class="property"> = {'i8': 'int64', 'NPY_COMPLEX128': 'complex128', 'f4': 'float32', 'string': 'str', 'np.NPY_BYTE': 'char', 'int': 'int32', 'float': 'float64', 'i4': 'int32', 'NPY_BOOL': 'bool', 'np.NPY_BOOL': 'bool', 'np.NPY_STRING': 'str', 'np.NPY_VOID': 'void', 'uint': 'uint32', 'ui4': 'uint32', 'np.NPY_COMPLEX128': 'complex128', 'ui8': 'uint64', 'b': 'bool', 'f': 'float64', 'i': 'int32', 'np.NPY_FLOAT32': 'float32', 'np.NPY_INT32': 'int32', 'np.NPY_FLOAT64': 'float64', 'NPY_FLOAT32': 'float32', 'np.NPY_OBJECT': 'void', 'NPY_INT32': 'int32', 'f8': 'float64', 's': 'str', 'complex': 'complex128', 'ui': 'uint32', 'NPY_OBJECT': 'void', 'v': 'void', 'NPY_VOID': 'void', 'NPY_FLOAT64': 'float64', 'NPY_BYTE': 'char', 'NPY_UINT32': 'uint32', 'np.NPY_UINT32': 'uint32', 'NPY_STRING': 'str'}</em><a class="headerlink" href="#bright.apigen.typesystem.type_aliases" title="Permalink to this definition">¶</a></dt>
+<dd><p>Aliases that may be used to subsitute one type name for another.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../index.html">
+          <img class="logo" src="../../_static/BrightIconSmall.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Type System</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a><ul>
+<li><a class="reference internal" href="#canonical-forms">Canonical Forms</a></li>
+<li><a class="reference internal" href="#shorthand-forms">Shorthand Forms</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#type-system-api">Type System API</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">API Generation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="autodescribe.html"
+                        title="next chapter">Automatic Descriptions</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/libref/apigen/typesystem.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="autodescribe.html" title="Automatic Descriptions"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="index.html" title="API Generation"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">bright 0.6-dev documentation</a> &raquo;</li>
+
+          <li><a href="../index.html" >Library Reference</a> &raquo;</li>
+          <li><a href="index.html" >API Generation</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2008 - 2013, Anthony Scopatz.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

@@ -1,0 +1,567 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Automatic Descriptions &mdash; bright 0.6-dev documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/cloud.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.6-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="top" title="bright 0.6-dev documentation" href="../../index.html" />
+    <link rel="up" title="API Generation" href="index.html" />
+    <link rel="next" title="Cython Generation" href="cythongen.html" />
+    <link rel="prev" title="Type System" href="typesystem.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <div class="relbar-top">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="cythongen.html" title="Cython Generation"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="typesystem.html" title="Type System"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">bright 0.6-dev documentation</a> &raquo;</li>
+
+          <li><a href="../index.html" >Library Reference</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API Generation</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-bright.apigen.autodescribe">
+<span id="automatic-descriptions"></span><span id="bright-apigen-autodescribe"></span><h1>Automatic Descriptions<a class="headerlink" href="#module-bright.apigen.autodescribe" title="Permalink to this headline">¶</a></h1>
+<p>This module creates descriptions of C++ classes from source code, by using 
+external parsers (GCC-XML, Clang AST) and the type system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Anthony Scopatz &lt;<a class="reference external" href="mailto:scopatz&#37;&#52;&#48;gmail&#46;com">scopatz<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="descriptions">
+<h2>Descriptions<a class="headerlink" href="#descriptions" title="Permalink to this headline">¶</a></h2>
+<p>A key component of API wrapper generation is having a a top-level, abstract 
+representation of the software that is being wrapped.  In C++ there are three
+basic constructs which may be wrapped: variables, functions, and classes.  
+Here we restrict ourselves to wrapping classes (though ironically these are
+the most complex of the three).</p>
+<p>The abstract representation of a C++ class is known as a <strong>description</strong> (abbr. 
+<em>desc</em>).  This description is simply a Python dictionary with a specific structure.
+This structure makes heavy use of the type system to declare the types of all needed
+parameters.</p>
+<div class="section" id="top-level-keys">
+<h3>Top-Level Keys<a class="headerlink" href="#top-level-keys" title="Permalink to this headline">¶</a></h3>
+<p>The following are valid top-level keys in a description dictionary: 
+name, parents, namespace, attrs, methods, docstrings, and extra.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">name:</th><td class="field-body">str, the class name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">parents:</th><td class="field-body">list of strings, the immediate parents of the class (not grandparents)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">namespace:</th><td class="field-body">str or None, the namespace or module the class lives in.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">attrs:</th><td class="field-body">dict or dict-like, the names of the attributes (member variables) of the
+class mapped to their types, given in the format of the type system.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">methods:</th><td class="field-body">dict or dict-like, similar to the attrs except that the keys are now
+function signatures and the values are the method return types.  The signatures
+themselves are tuples. The first element of these tuples is the method name.
+The remaining elements (if any) are the function arguments.  Arguments are 
+themselves length-2 or -3 tuples whose first elements are the argument names, 
+the second element is the argument type, and the third element (if present) is
+the default value.  If the return type is None (as opposed to &#8216;void&#8217;), then 
+this method is assumed to be a constructor or destructor.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">docstrings:</th><td class="field-body">dict, optional, this dictionary is meant for storing documentation 
+strings.  All values are thus either strings or dictionaries of strings.  
+Valid keys include: module, class, attrs, and methods.  The attrs and methods
+keys are dictionaries which may include keys that mirror the top-level keys of
+the same name.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">extra:</th><td class="field-body">dict, optional, this stores arbitrary metadata that may be used with 
+different backends. It is not added by any auto-describe routine but may be
+inserted later if needed.  One example use case is that the Cython generation
+looks for the pyx, pxd, and cpppxd keys for strings of supplemental Cython 
+code to insert directly into the wrapper.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="toaster-example">
+<h3>Toaster Example<a class="headerlink" href="#toaster-example" title="Permalink to this headline">¶</a></h3>
+<p>Suppose we have a C++ class called Toaster that takes bread and makes delicious 
+toast.  A valid description dictionary for this class would be as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">desc</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Toaster&#39;</span><span class="p">,</span>
+    <span class="s">&#39;parents&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;FCComp&#39;</span><span class="p">],</span>
+    <span class="s">&#39;namespace&#39;</span><span class="p">:</span> <span class="s">&#39;bright&#39;</span><span class="p">,</span>
+    <span class="s">&#39;attrs&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&#39;n_slices&#39;</span><span class="p">:</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span>
+        <span class="s">&#39;rate&#39;</span><span class="p">:</span> <span class="s">&#39;float64&#39;</span><span class="p">,</span>
+        <span class="s">&#39;toastiness&#39;</span><span class="p">:</span> <span class="s">&#39;str&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="s">&#39;methods&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="p">(</span><span class="s">&#39;Toaster&#39;</span><span class="p">,):</span> <span class="bp">None</span><span class="p">,</span>
+        <span class="p">(</span><span class="s">&#39;Toaster&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;str&#39;</span><span class="p">,</span> <span class="s">&#39;&quot;&quot;&#39;</span><span class="p">)):</span> <span class="bp">None</span><span class="p">,</span>
+        <span class="p">(</span><span class="s">&#39;Toaster&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;paramtrack&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;set&#39;</span><span class="p">,</span> <span class="s">&#39;str&#39;</span><span class="p">)),</span> <span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;str&#39;</span><span class="p">,</span> <span class="s">&#39;&quot;&quot;&#39;</span><span class="p">)):</span> <span class="bp">None</span><span class="p">,</span>
+        <span class="p">(</span><span class="s">&#39;~Toaster&#39;</span><span class="p">,):</span> <span class="bp">None</span><span class="p">,</span> 
+        <span class="p">(</span><span class="s">&#39;tostring&#39;</span><span class="p">,):</span> <span class="s">&#39;str&#39;</span><span class="p">,</span> 
+        <span class="p">(</span><span class="s">&#39;calc&#39;</span><span class="p">,):</span> <span class="s">&#39;Material&#39;</span><span class="p">,</span>
+        <span class="p">(</span><span class="s">&#39;calc&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;incomp&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;map&#39;</span><span class="p">,</span> <span class="s">&#39;int32&#39;</span><span class="p">,</span> <span class="s">&#39;float64&#39;</span><span class="p">))):</span> <span class="s">&#39;Material&#39;</span><span class="p">,</span>
+        <span class="p">(</span><span class="s">&#39;calc&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;mat&#39;</span><span class="p">,</span> <span class="s">&#39;Material&#39;</span><span class="p">)):</span> <span class="s">&#39;Material&#39;</span><span class="p">,</span>
+        <span class="p">(</span><span class="s">&#39;write&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;filename&#39;</span><span class="p">,</span> <span class="s">&#39;str&#39;</span><span class="p">,</span> <span class="s">&#39;&quot;toaster.txt&quot;&#39;</span><span class="p">)):</span> <span class="s">&#39;void&#39;</span><span class="p">,</span>
+        <span class="p">(</span><span class="s">&#39;write&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;filename&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;char&#39;</span> <span class="s">&#39;*&#39;</span><span class="p">),</span> <span class="s">&#39;&quot;toaster.txt&quot;&#39;</span><span class="p">)):</span> <span class="s">&#39;void&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="s">&#39;docstrings&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&#39;module&#39;</span><span class="p">:</span> <span class="s">&quot;This is where Toaster lives.&quot;</span><span class="p">,</span>
+        <span class="s">&#39;class&#39;</span><span class="p">:</span> <span class="s">&quot;I am a toaster!&quot;</span><span class="p">,</span>
+        <span class="s">&#39;attrs&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">&#39;n_slices&#39;</span><span class="p">:</span> <span class="s">&#39;the number of slices&#39;</span><span class="p">,</span>
+            <span class="s">&#39;rate&#39;</span><span class="p">:</span> <span class="s">&#39;the toast rate&#39;</span><span class="p">,</span>
+            <span class="s">&#39;toastiness&#39;</span><span class="p">:</span> <span class="s">&#39;the toastiness level&#39;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="s">&#39;methods&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">&#39;Toaster&#39;</span><span class="p">:</span> <span class="s">&quot;Make me a toaster!&quot;</span><span class="p">,</span>
+            <span class="s">&#39;~Toaster&#39;</span><span class="p">:</span> <span class="s">&quot;Noooooo&quot;</span><span class="p">,</span>
+            <span class="s">&#39;tostring&#39;</span><span class="p">:</span> <span class="s">&quot;string representation of the toaster&quot;</span><span class="p">,</span>
+            <span class="s">&#39;calc&#39;</span><span class="p">:</span> <span class="s">&quot;actually makes the toast.&quot;</span><span class="p">,</span>
+            <span class="s">&#39;write&#39;</span><span class="p">:</span> <span class="s">&quot;persists the toaster state.&quot;</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+    <span class="s">&#39;extra&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&#39;pyx&#39;</span><span class="p">:</span> <span class="s">&#39;toaster = Toaster()  # make toaster singleton&#39;</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="automatic-description-generation">
+<h3>Automatic Description Generation<a class="headerlink" href="#automatic-description-generation" title="Permalink to this headline">¶</a></h3>
+<p>The purpose of this module is to create description dictionaries like those
+above by automatically parsing C++ classes.  In theory this parsing step may 
+be handled by visiting any syntax tree of C++ code.  Two options were pursued here:
+GCC-XML and the Python bindings to the Clang AST.  Unfortunately, the Clang AST
+bindings lack exposure for template argument types.  These are needed to use any
+standard library containers.  Thus while the Clang method was pursued to a mostly
+working state, the GCC-XML version is the only fully functional automatic describer
+for the moment.</p>
+</div>
+</div>
+<div class="section" id="automatic-descriptions-api">
+<h2>Automatic Descriptions API<a class="headerlink" href="#automatic-descriptions-api" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="bright.apigen.autodescribe.ClangTypeVisitor">
+<em class="property">class </em><tt class="descclassname">bright.apigen.autodescribe.</tt><tt class="descname">ClangTypeVisitor</tt><big>(</big><em>verbose=False</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.ClangTypeVisitor" title="Permalink to this definition">¶</a></dt>
+<dd><p>For a Clang type located at a root node, compute the cooresponding 
+typesystem type.</p>
+<dl class="method">
+<dt id="bright.apigen.autodescribe.ClangTypeVisitor.visit">
+<tt class="descname">visit</tt><big>(</big><em>root</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.ClangTypeVisitor.visit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a root type.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber">
+<em class="property">class </em><tt class="descclassname">bright.apigen.autodescribe.</tt><tt class="descname">GccxmlClassDescriber</tt><big>(</big><em>classname</em>, <em>root=None</em>, <em>onlyin=None</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class used to generate descriptions via GCC-XML output.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>classname</strong> : str</p>
+<blockquote>
+<div><p>The classname, this may not have a None value.</p>
+</div></blockquote>
+<p><strong>root</strong> : element tree node, optional</p>
+<blockquote>
+<div><p>The root element node of the class or struct to describe.</p>
+</div></blockquote>
+<p><strong>onlyin</strong> :  str, optional</p>
+<blockquote>
+<div><p>Filename the class or struct described must live in.  Prevents 
+finding classes of the same name coming from other libraries.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote class="last">
+<div><p>Flag to display extra information while visiting the class.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber.context">
+<tt class="descname">context</tt><big>(</big><em>id</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber.context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolves the context from its id and information in the element tree.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber.type">
+<tt class="descname">type</tt><big>(</big><em>id</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolves the type from its id and information in the root element tree.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber.visit">
+<tt class="descname">visit</tt><big>(</big><em>node=None</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber.visit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visits the class node and all sub-nodes, generating the description
+dictionary as it goes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>node</strong> : element tree node, optional</p>
+<blockquote class="last">
+<div><p>The element tree node to start from.  If this is None, then the 
+top-level class node is found and visited.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber.visit_argument">
+<tt class="descname">visit_argument</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber.visit_argument" title="Permalink to this definition">¶</a></dt>
+<dd><p>visits a constructor, destructor, or method argument.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber.visit_arraytype">
+<tt class="descname">visit_arraytype</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber.visit_arraytype" title="Permalink to this definition">¶</a></dt>
+<dd><p>visits an array type and maps it to a &#8216;*&#8217; refinement type.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber.visit_base">
+<tt class="descname">visit_base</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber.visit_base" title="Permalink to this definition">¶</a></dt>
+<dd><p>visits a base class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber.visit_class">
+<tt class="descname">visit_class</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber.visit_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>visits a class or struct.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber.visit_constructor">
+<tt class="descname">visit_constructor</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber.visit_constructor" title="Permalink to this definition">¶</a></dt>
+<dd><p>visits a class constructor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber.visit_destructor">
+<tt class="descname">visit_destructor</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber.visit_destructor" title="Permalink to this definition">¶</a></dt>
+<dd><p>visits a class destructor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber.visit_field">
+<tt class="descname">visit_field</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber.visit_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>visits a member variable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber.visit_fundamentaltype">
+<tt class="descname">visit_fundamentaltype</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber.visit_fundamentaltype" title="Permalink to this definition">¶</a></dt>
+<dd><p>visits a base C++ type, mapping it to the approriate type in the 
+type system.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber.visit_method">
+<tt class="descname">visit_method</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber.visit_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>visits a member function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber.visit_namespace">
+<tt class="descname">visit_namespace</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber.visit_namespace" title="Permalink to this definition">¶</a></dt>
+<dd><p>visits the namespace that a node is defined in.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber.visit_pointertype">
+<tt class="descname">visit_pointertype</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber.visit_pointertype" title="Permalink to this definition">¶</a></dt>
+<dd><p>visits a pointer and maps it to a &#8216;*&#8217; refinement type.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber.visit_referencetype">
+<tt class="descname">visit_referencetype</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber.visit_referencetype" title="Permalink to this definition">¶</a></dt>
+<dd><p>visits a refernece and maps it to a &#8216;&amp;&#8217; refinement type.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber.visit_struct">
+<tt class="descname">visit_struct</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber.visit_struct" title="Permalink to this definition">¶</a></dt>
+<dd><p>visits a class or struct.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.apigen.autodescribe.GccxmlClassDescriber.visit_typedef">
+<tt class="descname">visit_typedef</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.GccxmlClassDescriber.visit_typedef" title="Permalink to this definition">¶</a></dt>
+<dd><p>visits a type definition anywhere.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.autodescribe.clang_describe">
+<tt class="descclassname">bright.apigen.autodescribe.</tt><tt class="descname">clang_describe</tt><big>(</big><em>filename</em>, <em>classname</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.clang_describe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use clang to describe the class.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.autodescribe.clang_find_attributes">
+<tt class="descclassname">bright.apigen.autodescribe.</tt><tt class="descname">clang_find_attributes</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.clang_find_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds attributes one level below the Clang node.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.autodescribe.clang_find_class">
+<tt class="descclassname">bright.apigen.autodescribe.</tt><tt class="descname">clang_find_class</tt><big>(</big><em>node</em>, <em>classname</em>, <em>namespace=None</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.clang_find_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the node for a given class underneath the current node.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.autodescribe.clang_find_declarations">
+<tt class="descclassname">bright.apigen.autodescribe.</tt><tt class="descname">clang_find_declarations</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.clang_find_declarations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds declarations one level below the Clang node.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.autodescribe.clang_is_loc_in_range">
+<tt class="descclassname">bright.apigen.autodescribe.</tt><tt class="descname">clang_is_loc_in_range</tt><big>(</big><em>location</em>, <em>source_range</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.clang_is_loc_in_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether a given Clang location is part of a source file range.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.autodescribe.clang_range_str">
+<tt class="descclassname">bright.apigen.autodescribe.</tt><tt class="descname">clang_range_str</tt><big>(</big><em>source_range</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.clang_range_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the text present on a source range.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.autodescribe.describe">
+<tt class="descclassname">bright.apigen.autodescribe.</tt><tt class="descname">describe</tt><big>(</big><em>filename</em>, <em>classname=None</em>, <em>parser='gccxml'</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.describe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatically describes a class in a file.  This is the main entry point.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>The path to the file.</p>
+</div></blockquote>
+<p><strong>classname</strong> : str or None, optional</p>
+<blockquote>
+<div><p>The classname, a &#8216;None&#8217; value will attempt to infer this from the 
+filename.</p>
+</div></blockquote>
+<p><strong>parser</strong> : str, optional</p>
+<blockquote>
+<div><p>The parser / AST to use to use for the C++ file.  Currently only
+&#8216;clang&#8217; and &#8216;gccxml&#8217; are supported, though others may be 
+implemented in the future.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>Flag to diplay extra information while describing the class.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>desc</strong> : dict</p>
+<blockquote class="last">
+<div><p>A dictionary describing the class which may be used to generate
+API bindings.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.autodescribe.gccxml_describe">
+<tt class="descclassname">bright.apigen.autodescribe.</tt><tt class="descname">gccxml_describe</tt><big>(</big><em>filename</em>, <em>classname</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.gccxml_describe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use GCC-XML to describe the class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>The path to the file.</p>
+</div></blockquote>
+<p><strong>classname</strong> : str or None, optional</p>
+<blockquote>
+<div><p>The classname, a &#8216;None&#8217; value will attempt to infer this from the 
+filename.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>Flag to diplay extra information while describing the class.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>desc</strong> : dict</p>
+<blockquote class="last">
+<div><p>A dictionary describing the class which may be used to generate
+API bindings.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.autodescribe.merge_descriptions">
+<tt class="descclassname">bright.apigen.autodescribe.</tt><tt class="descname">merge_descriptions</tt><big>(</big><em>descriptions</em><big>)</big><a class="headerlink" href="#bright.apigen.autodescribe.merge_descriptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a sequence of descriptions, in order of increasing precedence, 
+merge them into a single description dictionary.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../index.html">
+          <img class="logo" src="../../_static/BrightIconSmall.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Automatic Descriptions</a><ul>
+<li><a class="reference internal" href="#descriptions">Descriptions</a><ul>
+<li><a class="reference internal" href="#top-level-keys">Top-Level Keys</a></li>
+<li><a class="reference internal" href="#toaster-example">Toaster Example</a></li>
+<li><a class="reference internal" href="#automatic-description-generation">Automatic Description Generation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#automatic-descriptions-api">Automatic Descriptions API</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="typesystem.html"
+                        title="previous chapter">Type System</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cythongen.html"
+                        title="next chapter">Cython Generation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/libref/apigen/autodescribe.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="cythongen.html" title="Cython Generation"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="typesystem.html" title="Type System"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">bright 0.6-dev documentation</a> &raquo;</li>
+
+          <li><a href="../index.html" >Library Reference</a> &raquo;</li>
+          <li><a href="index.html" >API Generation</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2008 - 2013, Anthony Scopatz.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

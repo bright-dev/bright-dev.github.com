@@ -1,0 +1,306 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>API Generation CLI &mdash; bright 0.6-dev documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/cloud.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.6-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../_static/cloud.js"></script>
+    <link rel="top" title="bright 0.6-dev documentation" href="../../index.html" />
+    <link rel="up" title="API Generation" href="index.html" />
+    <link rel="next" title="Utilities" href="utils.html" />
+    <link rel="prev" title="Cython Generation" href="cythongen.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <div class="relbar-top">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="utils.html" title="Utilities"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="cythongen.html" title="Cython Generation"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">bright 0.6-dev documentation</a> &raquo;</li>
+
+          <li><a href="../index.html" >Library Reference</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">API Generation</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-bright.apigen.main">
+<span id="api-generation-cli"></span><span id="bright-apigen-main"></span><h1>API Generation CLI<a class="headerlink" href="#module-bright.apigen.main" title="Permalink to this headline">¶</a></h1>
+<p>Top-level automatic API generators for Bright.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Anthony Scopatz &lt;<a class="reference external" href="mailto:scopatz&#37;&#52;&#48;gmail&#46;com">scopatz<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="api-generation">
+<h2>API Generation<a class="headerlink" href="#api-generation" title="Permalink to this headline">¶</a></h2>
+<p>This module is where all of the Bright-specific API generation routines reside.
+Until now the type system, automatic description, and cython code generation have
+all be independent of what classes they are wrapping.  The functions and classes
+here are specifically set up to be executed on the Bright code base.  Thus, 
+attempting to wrap other codes with the tools developed here would only need to fork
+this module.</p>
+<p>The main module is normally run from the base bright directory as follows:</p>
+<div class="highlight-bash"><div class="highlight"><pre>~ <span class="nv">$ </span><span class="nb">cd </span>bright
+~/bright <span class="nv">$ </span>python bright/apigen/main.py
+</pre></div>
+</div>
+<p>The function here has the following command line interface:</p>
+<div class="highlight-python"><pre>usage: Generates Bright API [-h] [--debug] [--no-cython] [--no-cyclus]
+                            [--dump-desc] [-v]
+
+optional arguments:
+  -h, --help     show this help message and exit
+  --debug        build with debugging flags
+  --no-cython    don't make cython bindings
+  --no-cyclus    don't make cyclus bindings
+  --dump-desc    print description cache
+  -v, --verbose  print more output</pre>
+</div>
+</div>
+<div class="section" id="main-api">
+<h2>Main API<a class="headerlink" href="#main-api" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="bright.apigen.main.DescriptionCache">
+<em class="property">class </em><tt class="descclassname">bright.apigen.main.</tt><tt class="descname">DescriptionCache</tt><big>(</big><em>cachefile='build/desc.cache'</em><big>)</big><a class="headerlink" href="#bright.apigen.main.DescriptionCache" title="Permalink to this definition">¶</a></dt>
+<dd><p>A quick persistent cache for descriptions from files.  
+The keys are (classname, filename) tuples.  The values are 
+(hashes-of-the-file, description-dictionary) tuples.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>cachefile</strong> : str, optional</p>
+<blockquote class="last">
+<div><p>Path to description cachefile.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="bright.apigen.main.DescriptionCache.dump">
+<tt class="descname">dump</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.apigen.main.DescriptionCache.dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the cache out to the filesystem.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bright.apigen.main.DescriptionCache.isvalid">
+<tt class="descname">isvalid</tt><big>(</big><em>classname</em>, <em>filename</em><big>)</big><a class="headerlink" href="#bright.apigen.main.DescriptionCache.isvalid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean on whether the cach value for a (classname, filename)
+tuple matches the state of the file on the system.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.main.describe_class">
+<tt class="descclassname">bright.apigen.main.</tt><tt class="descname">describe_class</tt><big>(</big><em>classname</em>, <em>filename</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#bright.apigen.main.describe_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a description dictionary for a class (called classname) 
+living in a file (called filename).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>classname</strong> : str</p>
+<blockquote>
+<div><p>Class to describe.</p>
+</div></blockquote>
+<p><strong>filename</strong> : str</p>
+<blockquote>
+<div><p>File where the class is implemented.  Will remove leading <tt class="docutils literal"><span class="pre">'bright_'</span></tt> from
+filename for the puprose of generating other files.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional</p>
+<blockquote>
+<div><p>Flag for printing extra information during description process.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>desc</strong> : dict</p>
+<blockquote class="last">
+<div><p>Description dictionary of the class.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.main.dumpdesc">
+<tt class="descclassname">bright.apigen.main.</tt><tt class="descname">dumpdesc</tt><big>(</big><em>ns</em><big>)</big><a class="headerlink" href="#bright.apigen.main.dumpdesc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the current contents of the description cache using ns.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.main.genbindings">
+<tt class="descclassname">bright.apigen.main.</tt><tt class="descname">genbindings</tt><big>(</big><em>ns</em><big>)</big><a class="headerlink" href="#bright.apigen.main.genbindings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates bidnings using the command line setting specified in ns.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.main.main">
+<tt class="descclassname">bright.apigen.main.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.apigen.main.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entry point for Bright API generation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bright.apigen.main.newoverwrite">
+<tt class="descclassname">bright.apigen.main.</tt><tt class="descname">newoverwrite</tt><big>(</big><em>s</em>, <em>filename</em><big>)</big><a class="headerlink" href="#bright.apigen.main.newoverwrite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Useful for not forcing re-compiles and thus playing nicely with the 
+build system.  This is acomplished by not writing the file if the existsing
+contents are exactly the same as what would be written out.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>s</strong> : str</p>
+<blockquote>
+<div><p>string contents of file to possible</p>
+</div></blockquote>
+<p><strong>filename</strong> : str</p>
+<blockquote class="last">
+<div><p>Path to file.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../index.html">
+          <img class="logo" src="../../_static/BrightIconSmall.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">API Generation CLI</a><ul>
+<li><a class="reference internal" href="#api-generation">API Generation</a></li>
+<li><a class="reference internal" href="#main-api">Main API</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="cythongen.html"
+                        title="previous chapter">Cython Generation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="utils.html"
+                        title="next chapter">Utilities</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/libref/apigen/main.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="utils.html" title="Utilities"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="cythongen.html" title="Cython Generation"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../../index.html">bright 0.6-dev documentation</a> &raquo;</li>
+
+          <li><a href="../index.html" >Library Reference</a> &raquo;</li>
+          <li><a href="index.html" >API Generation</a> &raquo;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2008 - 2013, Anthony Scopatz.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

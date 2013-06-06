@@ -1,18 +1,24 @@
 
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Reactor Parameters &mdash; bright v0.6 documentation</title>
-    <link rel="stylesheet" href="../_static/altered_nature.css" type="text/css" />
+    <title>Reactor Parameters &mdash; bright 0.6-dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/cloud.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.6',
+        VERSION:     '0.6-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,12 +27,17 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="bright v0.6 documentation" href="../index.html" />
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="top" title="bright 0.6-dev documentation" href="../index.html" />
     <link rel="up" title="ReactorMG Class" href="reactormg.html" />
     <link rel="next" title="Origen ReactorMG Class" href="origen_reactormg.html" />
     <link rel="prev" title="Fluence Point Class" href="fluence_point.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
+    <div class="relbar-top">
+        
     <div class="related">
       <h3>Navigation</h3>
       <ul>
@@ -34,16 +45,25 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
           <a href="origen_reactormg.html" title="Origen ReactorMG Class"
-             accesskey="N">next</a> |</li>
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
         <li class="right" >
           <a href="fluence_point.html" title="Fluence Point Class"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">bright 0.6-dev documentation</a> &raquo;</li>
+
           <li><a href="index.html" >Library Reference</a> &raquo;</li>
           <li><a href="reactormg.html" accesskey="U">ReactorMG Class</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+    </div>
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -52,10 +72,11 @@
             
   <div class="section" id="reactor-parameters">
 <span id="bright-reactor-parameters"></span><h1>Reactor Parameters<a class="headerlink" href="#reactor-parameters" title="Permalink to this headline">¶</a></h1>
-<p>The reactor classes have a couple of helper classes that allow them to function in a more intuitive manner.
-The ReactorParamters class specifies required data for the reactor model to run.  The use of this class
-prevents the initialization methods from having 15+ arguments.  Instead this class is passed to the constructor
-and related methods.</p>
+<p>The reactor classes have a couple of helper classes that allow them to function in
+a more intuitive manner.  The ReactorParamters class specifies required data for the
+reactor model to run.  The use of this class prevents the initialization methods
+from having 15+ arguments.  Instead this class is passed to the constructor and
+related methods.</p>
 <p>All functionality may be found in the <tt class="docutils literal"><span class="pre">reactor_parameters</span></tt> module:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">bright.reactor_parameters</span>
 </pre></div>
@@ -65,11 +86,21 @@ and related methods.</p>
 <dl class="class">
 <dt id="bright.reactor_parameters.ReactorParameters">
 <em class="property">class </em><tt class="descclassname">bright.reactor_parameters.</tt><tt class="descname">ReactorParameters</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters" title="Permalink to this definition">¶</a></dt>
-<dd><p>This data structure is a set of physical reactor parameters. It may be used to instantiate new reactor 
-objects <strong>OR</strong> to define default settings for a reactor type.  The data stored in this class is copied over 
-to a reactor instance in the initialize() method.  However, the attributes of this objects 
-take on more natural names than their reactor attribute analogies.  This is because it is this 
-object that Bright users will more often be interacting with.</p>
+<dd><p>This data structure is a set of physical reactor parameters. It may 
+be used to instantiate new reactor objects <strong>OR</strong> to define default 
+settings for a reactor type. The data stored in this class is copied 
+over to a reactor instance in the initialize() method.  However, the 
+attributes of this objects take on more natural names than their reactor 
+attribute analogies.  This is because it is this object that Bright users 
+will more often be interacting with.</p>
+<dl class="attribute">
+<dt id="bright.reactor_parameters.ReactorParameters.BUt">
+<tt class="descname">BUt</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.BUt" title="Permalink to this definition">¶</a></dt>
+<dd><p>The reactor&#8217;s target discharge burnup (float).  This is given 
+in units of [MWd/kgIHM].  Often the actual discharge burnup BUd does not 
+quite hit this value, but comes acceptably close.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="bright.reactor_parameters.ReactorParameters.batches">
 <tt class="descname">batches</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.batches" title="Permalink to this definition">¶</a></dt>
@@ -78,10 +109,84 @@ This is typically indexed by b.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="bright.reactor_parameters.ReactorParameters.branch_ratio_cutoff">
+<tt class="descname">branch_ratio_cutoff</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.branch_ratio_cutoff" title="Permalink to this definition">¶</a></dt>
+<dd><p>The cutoff value (float) below which the bateman equations are not solved.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactor_parameters.ReactorParameters.burn_regions">
+<tt class="descname">burn_regions</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.burn_regions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of annular burn regions (int).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactor_parameters.ReactorParameters.burn_times">
+<tt class="descname">burn_times</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.burn_times" title="Permalink to this definition">¶</a></dt>
+<dd><p>A non-negative, monotonically increasing numpy float array (C++ vector&lt;double&gt;) 
+of burnup times [days].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactor_parameters.ReactorParameters.burnup_via_constant">
+<tt class="descname">burnup_via_constant</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.burnup_via_constant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flag (str) for constant &#8220;flux&#8221; or &#8220;power&#8221; calculations.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactor_parameters.ReactorParameters.clad_radius">
+<tt class="descname">clad_radius</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.clad_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>The radius (float) of the cladding region [cm].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactor_parameters.ReactorParameters.cladding_density">
+<tt class="descname">cladding_density</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.cladding_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>The cladding region density.  A float in units of [g/cm^3].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactor_parameters.ReactorParameters.cladding_form">
+<tt class="descname">cladding_form</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.cladding_form" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the chemical form of cladding as a dictionary or other mapping.  
+This uses the same notation as fuel_form except that &#8220;IHM&#8221; is no longer 
+a valid key.  Cladding is often made from some zircalloy.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactor_parameters.ReactorParameters.coolant_density">
+<tt class="descname">coolant_density</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.coolant_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>The coolant region density.  A float in units of [g/cm^3].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactor_parameters.ReactorParameters.coolant_form">
+<tt class="descname">coolant_form</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.coolant_form" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the chemical form of coolant as a dictionary or other mapping.  
+This uses the same notation as fuel_form except that &#8220;IHM&#8221; is no longer 
+a valid key.  The term &#8216;coolant&#8217; is used in preference over the term 
+&#8216;moderator&#8217; because not all reactors moderate neutrons.  For example, 
+LWRs often cool the reactor core with borated water:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ReactorParamters</span><span class="o">.</span><span class="n">coolant_form</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">ReactorParamters</span><span class="o">.</span><span class="n">coolant_form</span><span class="p">[</span><span class="s">&quot;H1&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">2.0</span>
+<span class="n">ReactorParamters</span><span class="o">.</span><span class="n">coolant_form</span><span class="p">[</span><span class="s">&quot;O16&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">ReactorParamters</span><span class="o">.</span><span class="n">coolant_form</span><span class="p">[</span><span class="s">&quot;B10&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.199</span> <span class="o">*</span> <span class="mi">550</span> <span class="o">*</span> <span class="mf">10.0</span><span class="o">**-</span><span class="mi">6</span>
+<span class="n">ReactorParamters</span><span class="o">.</span><span class="n">coolant_form</span><span class="p">[</span><span class="s">&quot;B11&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.801</span> <span class="o">*</span> <span class="mi">550</span> <span class="o">*</span> <span class="mf">10.0</span><span class="o">**-</span><span class="mi">6</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="bright.reactor_parameters.ReactorParameters.flux">
 <tt class="descname">flux</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.flux" title="Permalink to this definition">¶</a></dt>
-<dd><p>The nominal flux value (float) that the library for this reactor type was generated with.  
-Often used to correctly weight batch-specific fluxes.</p>
+<dd><p>The nominal flux value (float) that the library for this reactor type was 
+generated with.   Often used to correctly weight batch-specific fluxes.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactor_parameters.ReactorParameters.fuel_density">
+<tt class="descname">fuel_density</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.fuel_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>The fuel region density.  A float in units of [g/cm^3].</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -98,86 +203,9 @@ For example, LWRs typically use a UOX fuel form:</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="bright.reactor_parameters.ReactorParameters.cladding_form">
-<tt class="descname">cladding_form</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.cladding_form" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is the chemical form of cladding as a dictionary or other mapping.  
-This uses the same notation as fuel_form except that &#8220;IHM&#8221; is no longer 
-a valid key.  Cladding is often made from some zircalloy.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor_parameters.ReactorParameters.coolant_form">
-<tt class="descname">coolant_form</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.coolant_form" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is the chemical form of coolant as a dictionary or other mapping.  
-This uses the same notation as fuel_form except that &#8220;IHM&#8221; is no longer 
-a valid key.  The term &#8216;coolant&#8217; is used in preference over the term 
-&#8216;moderator&#8217; because not all reactors moderate neutrons.  For example, 
-LWRs often cool the reactor core with borated water:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">ReactorParamters</span><span class="o">.</span><span class="n">coolant_form</span> <span class="o">=</span> <span class="p">{}</span>
-
-<span class="n">ReactorParamters</span><span class="o">.</span><span class="n">coolant_form</span><span class="p">[</span><span class="s">&quot;H1&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">2.0</span>
-<span class="n">ReactorParamters</span><span class="o">.</span><span class="n">coolant_form</span><span class="p">[</span><span class="s">&quot;O16&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="n">ReactorParamters</span><span class="o">.</span><span class="n">coolant_form</span><span class="p">[</span><span class="s">&quot;B10&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.199</span> <span class="o">*</span> <span class="mi">550</span> <span class="o">*</span> <span class="mf">10.0</span><span class="o">**-</span><span class="mi">6</span>
-<span class="n">ReactorParamters</span><span class="o">.</span><span class="n">coolant_form</span><span class="p">[</span><span class="s">&quot;B11&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.801</span> <span class="o">*</span> <span class="mi">550</span> <span class="o">*</span> <span class="mf">10.0</span><span class="o">**-</span><span class="mi">6</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor_parameters.ReactorParameters.fuel_density">
-<tt class="descname">fuel_density</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.fuel_density" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fuel region density.  A float in units of [g/cm^3].</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor_parameters.ReactorParameters.cladding_density">
-<tt class="descname">cladding_density</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.cladding_density" title="Permalink to this definition">¶</a></dt>
-<dd><p>The cladding region density.  A float in units of [g/cm^3].</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor_parameters.ReactorParameters.coolant_density">
-<tt class="descname">coolant_density</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.coolant_density" title="Permalink to this definition">¶</a></dt>
-<dd><p>The coolant region density.  A float in units of [g/cm^3].</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor_parameters.ReactorParameters.pnl">
-<tt class="descname">pnl</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.pnl" title="Permalink to this definition">¶</a></dt>
-<dd><p>The reactor&#8217;s non-leakage probability (float).  This is often used as a calibration parameter.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor_parameters.ReactorParameters.BUt">
-<tt class="descname">BUt</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.BUt" title="Permalink to this definition">¶</a></dt>
-<dd><p>The reactor&#8217;s target discharge burnup (float).  This is given 
-in units of [MWd/kgIHM].  Often the actual discharge burnup BUd does not 
-quite hit this value, but comes acceptably close.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor_parameters.ReactorParameters.specific_power">
-<tt class="descname">specific_power</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.specific_power" title="Permalink to this definition">¶</a></dt>
-<dd><p>The specific power of the fuel (float) in units of [MW/kgIHM]</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor_parameters.ReactorParameters.burn_regions">
-<tt class="descname">burn_regions</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.burn_regions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Number of annular burn regions (int).</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor_parameters.ReactorParameters.burn_times">
-<tt class="descname">burn_times</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.burn_times" title="Permalink to this definition">¶</a></dt>
-<dd><p>A non-negative, monotonically increasing numpy float array (C++ vector&lt;double&gt;) of burnup times [days].</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor_parameters.ReactorParameters.use_disadvantage_factor">
-<tt class="descname">use_disadvantage_factor</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.use_disadvantage_factor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Boolaean to determine whether the thermal disadvantage factor is employed or not.  
-LWRs typically set this as True while FRs have a False value.</p>
+<dt id="bright.reactor_parameters.ReactorParameters.fuel_radius">
+<tt class="descname">fuel_radius</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.fuel_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>The radius (float) of the fuel region [cm].</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -188,34 +216,43 @@ Currently accepted values are &#8220;Planar&#8221;, &#8220;Spherical&#8221;, and
 </dd></dl>
 
 <dl class="attribute">
+<dt id="bright.reactor_parameters.ReactorParameters.open_slots">
+<tt class="descname">open_slots</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.open_slots" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of slots (float) in a fuel assembly that are open.  Thus this is the 
+number of slots that do not contain a fuel pin and are instead filled in by coolant.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bright.reactor_parameters.ReactorParameters.pnl">
+<tt class="descname">pnl</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.pnl" title="Permalink to this definition">¶</a></dt>
+<dd><p>The reactor&#8217;s non-leakage probability (float).  This is often used as a 
+calibration parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="bright.reactor_parameters.ReactorParameters.rescale_hydrogen">
 <tt class="descname">rescale_hydrogen</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.rescale_hydrogen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Boolean to determine whether the reactor should rescale the Hydrogen-1 destruction 
-rate in the coolant as a function of fluence.  The scaling factor is calculated via the 
-following equation</p>
+rate in the coolant as a function of fluence.  The scaling factor is calculated via 
+the following equation</p>
 <blockquote>
 <div><div class="math">
-<p><img src="../_images/math/6689e079e8ff0012d073701b945fc812a4c1ea43.png" alt="f(F) = 1.36927 - 0.01119 \cdot BU(F)" /></p>
+<p><img src="../_images/math/6689e079e8ff0012d073701b945fc812a4c1ea43.png" alt="f(F) = 1.36927 - 0.01119 \cdot BU(F)"/></p>
 </div></div></blockquote>
 <p>This is typically not done for fast reactors but is a useful correction for LWRs.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="bright.reactor_parameters.ReactorParameters.fuel_radius">
-<tt class="descname">fuel_radius</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.fuel_radius" title="Permalink to this definition">¶</a></dt>
-<dd><p>The radius (float) of the fuel region [cm].</p>
+<dt id="bright.reactor_parameters.ReactorParameters.specific_power">
+<tt class="descname">specific_power</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.specific_power" title="Permalink to this definition">¶</a></dt>
+<dd><p>The specific power of the fuel (float) in units of [MW/kgIHM]</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="bright.reactor_parameters.ReactorParameters.void_radius">
-<tt class="descname">void_radius</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.void_radius" title="Permalink to this definition">¶</a></dt>
-<dd><p>The radius (float) of the void region [cm].</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.reactor_parameters.ReactorParameters.clad_radius">
-<tt class="descname">clad_radius</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.clad_radius" title="Permalink to this definition">¶</a></dt>
-<dd><p>The radius (float) of the cladding region [cm].</p>
+<dt id="bright.reactor_parameters.ReactorParameters.total_slots">
+<tt class="descname">total_slots</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.total_slots" title="Permalink to this definition">¶</a></dt>
+<dd><p>The total number of fuel pin slots (float) in a fuel assembly.  
+For a 17x17 bundle this is 289.0.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -225,17 +262,16 @@ following equation</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="bright.reactor_parameters.ReactorParameters.open_slots">
-<tt class="descname">open_slots</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.open_slots" title="Permalink to this definition">¶</a></dt>
-<dd><p>The number of slots (float) in a fuel assembly that are open.  Thus this is the 
-number of slots that do not contain a fuel pin and are instead filled in by coolant.</p>
+<dt id="bright.reactor_parameters.ReactorParameters.use_disadvantage_factor">
+<tt class="descname">use_disadvantage_factor</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.use_disadvantage_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolaean to determine whether the thermal disadvantage factor is employed or not.  
+LWRs typically set this as True while FRs have a False value.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="bright.reactor_parameters.ReactorParameters.total_slots">
-<tt class="descname">total_slots</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.total_slots" title="Permalink to this definition">¶</a></dt>
-<dd><p>The total number of fuel pin slots (float) in a fuel assembly.  For a 17x17 bundle 
-this is 289.0.</p>
+<dt id="bright.reactor_parameters.ReactorParameters.void_radius">
+<tt class="descname">void_radius</tt><a class="headerlink" href="#bright.reactor_parameters.ReactorParameters.void_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>The radius (float) of the void region [cm].</p>
 </dd></dl>
 
 </dd></dl>
@@ -253,7 +289,7 @@ and then only change the necessary attributes.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>lwrd</strong> : ReactorParameters</p>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>lwrd</strong> : ReactorParameters</p>
 <blockquote class="last">
 <div><p>Light water reactor default parameters.</p>
 </div></blockquote>
@@ -277,7 +313,7 @@ and then only change the necessary attributes.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>frd</strong> : ReactorParameters</p>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>frd</strong> : ReactorParameters</p>
 <blockquote class="last">
 <div><p>Fast reactor default parameters.</p>
 </div></blockquote>
@@ -300,9 +336,10 @@ and then only change the necessary attributes.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/BrightIconSmall.png" alt="Logo"/>
-            </a></p>
+        <p class="logo"><a href="../index.html">
+          <img class="logo" src="../_static/BrightIconSmall.png" alt="Logo"/>
+        </a></p>
+  <div class="sphinxlocaltoc">
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Reactor Parameters</a><ul>
@@ -312,6 +349,7 @@ and then only change the necessary attributes.</p>
 </li>
 </ul>
 
+  </div>
   <h4>Previous topic</h4>
   <p class="topless"><a href="fluence_point.html"
                         title="previous chapter">Fluence Point Class</a></p>
@@ -326,7 +364,7 @@ and then only change the necessary attributes.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -340,6 +378,8 @@ and then only change the necessary attributes.</p>
       </div>
       <div class="clearer"></div>
     </div>
+    <div class="relbar-bottom">
+        
     <div class="related">
       <h3>Navigation</h3>
       <ul>
@@ -347,19 +387,29 @@ and then only change the necessary attributes.</p>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
           <a href="origen_reactormg.html" title="Origen ReactorMG Class"
-             >next</a> |</li>
+             >next</a> &nbsp; &nbsp;</li>
         <li class="right" >
           <a href="fluence_point.html" title="Fluence Point Class"
-             >previous</a> |</li>
-        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">bright 0.6-dev documentation</a> &raquo;</li>
+
           <li><a href="index.html" >Library Reference</a> &raquo;</li>
           <li><a href="reactormg.html" >ReactorMG Class</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2008 - 2011, Anthony Scopatz.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
+
+    <div class="footer">
+        &copy; Copyright 2008 - 2013, Anthony Scopatz.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
   </body>
 </html>

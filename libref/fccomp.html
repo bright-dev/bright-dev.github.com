@@ -1,18 +1,24 @@
 
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>FCComp Class &mdash; bright v0.6 documentation</title>
-    <link rel="stylesheet" href="../_static/altered_nature.css" type="text/css" />
+    <title>FCComp Class &mdash; bright 0.6-dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/cloud.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.6',
+        VERSION:     '0.6-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,12 +27,17 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="bright v0.6 documentation" href="../index.html" />
+    <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../_static/cloud.js"></script>
+    <link rel="top" title="bright 0.6-dev documentation" href="../index.html" />
     <link rel="up" title="Library Reference" href="index.html" />
-    <link rel="next" title="Enrichment" href="enrichment.html" />
-    <link rel="prev" title="Bright Configuration" href="bright_config.html" /> 
+    <link rel="next" title="Enrichment Parameters" href="enrichment_parameters.html" />
+    <link rel="prev" title="Library Reference" href="index.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
+    <div class="relbar-top">
+        
     <div class="related">
       <h3>Navigation</h3>
       <ul>
@@ -34,15 +45,24 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="enrichment.html" title="Enrichment"
-             accesskey="N">next</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
         <li class="right" >
-          <a href="bright_config.html" title="Bright Configuration"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="enrichment_parameters.html" title="Enrichment Parameters"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="index.html" title="Library Reference"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">bright 0.6-dev documentation</a> &raquo;</li>
+
           <li><a href="index.html" accesskey="U">Library Reference</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+    </div>
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -59,224 +79,6 @@ components.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">bright.fccomp</span>
 </pre></div>
 </div>
-<dl class="class">
-<dt id="bright.fccomp.FCComp">
-<em class="property">class </em><tt class="descclassname">bright.fccomp.</tt><tt class="descname">FCComp</tt><a class="headerlink" href="#bright.fccomp.FCComp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Abstract Base Fuel Cycle Component Class.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>params</strong> : sequence of str, optional</p>
-<blockquote>
-<div><p>A set of parameter names (str) that the component will track.</p>
-</div></blockquote>
-<p><strong>name</strong> : str, optional</p>
-<blockquote class="last">
-<div><p>The name of the fuel cycle component instance.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
-<dt id="bright.fccomp.FCComp.name">
-<tt class="descname">name</tt><a class="headerlink" href="#bright.fccomp.FCComp.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>The string identifier for the component.  Defaults to an empty string.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.fccomp.FCComp.natural_name">
-<tt class="descname">natural_name</tt><a class="headerlink" href="#bright.fccomp.FCComp.natural_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>The natural name string identifier for the component. Computed from name value.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.fccomp.FCComp.mat_feed">
-<tt class="descname">mat_feed</tt><a class="headerlink" href="#bright.fccomp.FCComp.mat_feed" title="Permalink to this definition">¶</a></dt>
-<dd><p>A pyne.material.Material object that represents the flow of material into 
-this component for this pass.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.fccomp.FCComp.mat_prod">
-<tt class="descname">mat_prod</tt><a class="headerlink" href="#bright.fccomp.FCComp.mat_prod" title="Permalink to this definition">¶</a></dt>
-<dd><p>A pyne.material.Material object that represents the flow of material out of
-this component for this pass.  Calling the FCComp.calc() method should calculate 
-mat_prod from the mat_feed value.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.fccomp.FCComp.params_prior_calc">
-<tt class="descname">params_prior_calc</tt><a class="headerlink" href="#bright.fccomp.FCComp.params_prior_calc" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary (or C++ map) that represents component-specific parameters at input 
-for this pass. The keys are restricted to strings while their associated values are 
-floats (doubles).  For example, a reprocessing component may record the total mass 
-input using a &#8220;Mass&#8221; key.  This attribute does not have a meaningful value until the 
-calc_params() method is called.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.fccomp.FCComp.params_after_calc">
-<tt class="descname">params_after_calc</tt><a class="headerlink" href="#bright.fccomp.FCComp.params_after_calc" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary (or C++ map) that represents component-specific parameters at output 
-for this pass. The keys are restricted to strings while their associated values are 
-floats (doubles).  For example, a reactor component may have a &#8220;BUd&#8221; key that represents 
-the discharge burnup that the input fuel achieved.  This attribute does not have a meaningful 
-value until the calc_params() method is called.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.fccomp.FCComp.pass_num">
-<tt class="descname">pass_num</tt><a class="headerlink" href="#bright.fccomp.FCComp.pass_num" title="Permalink to this definition">¶</a></dt>
-<dd><p>An integer representing the number of passes this component has been cycled through.
-It starts at zero and is incremented by one each time the write_mat_pass() method is called.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bright.fccomp.FCComp.track_params">
-<tt class="descname">track_params</tt><a class="headerlink" href="#bright.fccomp.FCComp.track_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>A set of strings that holds the keys of params_prior_calc and params_after_calc.
-Every component type has its own set of parameters it is able to track.  This is why
-track_params is a component-specific attribute, while track_nucs is a bright-level
-variable.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.fccomp.FCComp.calc">
-<tt class="descname">calc</tt><big>(</big><em>input=None</em><big>)</big><a class="headerlink" href="#bright.fccomp.FCComp.calc" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method is used to determine a component&#8217;s output material from its input material.
-Therefore, this is typically where the bulk of a fuel cycle component&#8217;s algorithm lies.
-As each component type has a distinct methodology, the calc() method  needs 
-to be overridden child classes.</p>
-<p>This method should return mat_prod so that component calculations may be easily 
-daisy-chained together.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>input</strong> : dict or Material, optional</p>
-<blockquote>
-<div><p>If input is present, it set as mat_feed.  If input is a nuclide dictionary 
-(zzaaam keys, float values), this dictionary is first converted to a Material 
-before being set as mat_feed.</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>output</strong> : Material</p>
-<blockquote class="last">
-<div><p>mat_prod</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.fccomp.FCComp.calc_params">
-<tt class="descname">calc_params</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.fccomp.FCComp.calc_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>By calling this method, all parameter values are calculated and set for the fuel cycle component.
-This should be done following a calc() calculation but before data is written out.
-If a component has important parameters associated with it, this function must be overridden and called.</p>
-<p>Note that this is called first thing when write_params_pass() is called.  For example, reprocessing only 
-has a &#8220;Mass&#8221; parameter.  Translated into Python, calc_params() here looks like the following:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">calc_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">params_prior_calc</span><span class="p">[</span><span class="s">&quot;Mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_feed</span><span class="o">.</span><span class="n">mass</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">params_after_calc</span><span class="p">[</span><span class="s">&quot;Mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat_prod</span><span class="o">.</span><span class="n">mass</span>
-    <span class="k">return</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.fccomp.FCComp.write">
-<tt class="descname">write</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.fccomp.FCComp.write" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is a convenience function that first increments up pass_num.
-Then, it checks to see if there are any parameters for this component.
-If there are, it sets the current values using calc_params().</p>
-<p>If bright.bright_conf.write_hdf5 is True, then write_hdf5() is called.</p>
-<p>If bright.bright_conf.write_text is True, then write_text() is called.</p>
-<p>This is what is most often used to write Bright output.  Therefore it is
-typically the last step for every component in each pass.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.fccomp.FCComp.write_text">
-<tt class="descname">write_text</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.fccomp.FCComp.write_text" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method calls write_mat_pass() and then, if available, calls 
-write_params_pass().  This is convience function for producing 
-text-based output.  However, using write() is recommended.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.fccomp.FCComp.write_hdf5">
-<tt class="descname">write_hdf5</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.fccomp.FCComp.write_hdf5" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method writes out the isotopic pass data to an HDF5 file. 
-Then, if available, it also writes parameter data as well.  
-Using write() instead is recommended.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.fccomp.FCComp.write_mat_pass">
-<tt class="descname">write_mat_pass</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.fccomp.FCComp.write_mat_pass" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method is responsible for adding the current material data for this pass to the 
-output text and hdf5 files for this component.  Further calculations for this pass should 
-not be performed after write_mat_pass() has been called.</p>
-<p>This function has one very important subtletywhen writing <em>text</em> output. It does not write 
-out material data directly. Rather, input columns are given as normalized isotopic vectors.
-As weight fractions, input columns are in units of [kg_mat_feed[nuc]/kg_mat_feed.mass].
-Moreover, the output columns are given in terms relative to the mass of the input mass, 
-[kg_mat_prod[nuc]/kg_mat_feed.mass].  These are calculated via the following expressions.</p>
-<div class="math">
-<p><img src="../_images/math/2f1260032b05bd20273bf201e49ed11cf6108130.png" alt="\mbox{inpcol[nuc]} = \mbox{mat\_feed.comp[nuc]}
-
-\mbox{outcol[nuc]} = \mbox{mat\_prod.comp[nuc]} \times \frac{\mbox{mat\_prod.mass}}{\mbox{mat\_feed.mass}}" /></p>
-</div><p>Because of the units of these two columns, total mass flow data may often only be recovered via the 
-a &#8220;Mass&#8221; parameter in the parameter file.  Here is a sample LWRIsos.txt file for a
-light water reactor for the first pass:</p>
-<div class="highlight-python"><pre>Isotope 1in             1out    
-H1      0.000000E+00    0.000000E+00
-H3      0.000000E+00    8.568522E-08
-HE4     0.000000E+00    4.421615E-07
-B10     0.000000E+00    0.000000E+00
-B11     0.000000E+00    0.000000E+00
-C14     0.000000E+00    4.015091E-11
-O16     0.000000E+00    0.000000E+00
-SR90    0.000000E+00    8.221283E-04
-TC99    0.000000E+00    1.112580E-03
-CS137   0.000000E+00    1.821226E-03
-U234    0.000000E+00    2.807466E-06
-U235    4.773292E-02    8.951725E-03
-U236    0.000000E+00    6.155297E-03
-U237    0.000000E+00    1.719458E-05
-U238    9.522671E-01    9.211956E-01
-U239    0.000000E+00    6.953862E-07
-NP237   0.000000E+00    8.057270E-04
-PU238   0.000000E+00    2.842232E-04
-PU239   0.000000E+00    5.353362E-03
-PU240   0.000000E+00    2.114728E-03</pre>
-</div>
-<p>Note that HDF5 ouput perisists materials themseleves and do not present this normalization problem.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bright.fccomp.FCComp.write_params_pass">
-<tt class="descname">write_params_pass</tt><big>(</big><big>)</big><a class="headerlink" href="#bright.fccomp.FCComp.write_params_pass" title="Permalink to this definition">¶</a></dt>
-<dd><p>What write_mat_pass() does for a component&#8217;s input and output isotopics, 
-this method does for the components parameters.  To ensure that meaningful 
-data is available, calc_params() should be called elsewhere in the program  
-prior to this method.  Note that to get the pass numbering correct, 
-pass_num should always be incremented prior to this method.  The 
-following is an example of a text file output for a light water 
-reactor spent fuel reprocessing facility:</p>
-<div class="highlight-python"><pre>Param   1in             1out    
-Mass    9.985828E-01    9.975915E-01</pre>
-</div>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 
 
@@ -285,15 +87,15 @@ Mass    9.985828E-01    9.975915E-01</pre>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/BrightIconSmall.png" alt="Logo"/>
-            </a></p>
+        <p class="logo"><a href="../index.html">
+          <img class="logo" src="../_static/BrightIconSmall.png" alt="Logo"/>
+        </a></p>
   <h4>Previous topic</h4>
-  <p class="topless"><a href="bright_config.html"
-                        title="previous chapter">Bright Configuration</a></p>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Library Reference</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="enrichment.html"
-                        title="next chapter">Enrichment</a></p>
+  <p class="topless"><a href="enrichment_parameters.html"
+                        title="next chapter">Enrichment Parameters</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/libref/fccomp.txt"
@@ -302,7 +104,7 @@ Mass    9.985828E-01    9.975915E-01</pre>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -316,6 +118,8 @@ Mass    9.985828E-01    9.975915E-01</pre>
       </div>
       <div class="clearer"></div>
     </div>
+    <div class="relbar-bottom">
+        
     <div class="related">
       <h3>Navigation</h3>
       <ul>
@@ -323,18 +127,28 @@ Mass    9.985828E-01    9.975915E-01</pre>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="enrichment.html" title="Enrichment"
-             >next</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
         <li class="right" >
-          <a href="bright_config.html" title="Bright Configuration"
-             >previous</a> |</li>
-        <li><a href="../index.html">bright v0.6 documentation</a> &raquo;</li>
+          <a href="../np-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="enrichment_parameters.html" title="Enrichment Parameters"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="index.html" title="Library Reference"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">bright 0.6-dev documentation</a> &raquo;</li>
+
           <li><a href="index.html" >Library Reference</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2008 - 2011, Anthony Scopatz.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
+
+    <div class="footer">
+        &copy; Copyright 2008 - 2013, Anthony Scopatz.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
   </body>
 </html>

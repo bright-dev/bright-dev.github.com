@@ -1,0 +1,16 @@
+<map id="inheritance2683d2eaf1" name="inheritance2683d2eaf1">
+<area shape="rect" id="node1" href="storage.html#bright.storage.Storage" title="Storage" alt="" coords="247,81,319,109"/>
+<area shape="rect" id="node2" href="fccomp.html#bright.fccomp.FCComp" title="FCComp" alt="" coords="53,207,128,235"/>
+<area shape="rect" id="node5" href="reprocess.html#bright.reprocess.Reprocess" title="Reprocess" alt="" coords="240,131,325,159"/>
+<area shape="rect" id="node9" href="reactormg.html#bright.reactormg.ReactorMG" title="ReactorMG" alt="" coords="237,182,328,210"/>
+<area shape="rect" id="node11" href="reactor1g.html#bright.reactor1g.Reactor1G" title="Reactor1G" alt="" coords="239,233,327,261"/>
+<area shape="rect" id="node16" href="enrichment.html#bright.enrichment.Enrichment" title="Enrichment" alt="" coords="236,283,329,311"/>
+<area shape="rect" id="node20" href="fuel_fabrication.html#bright.fuel_fabrication.FuelFabrication" title="FuelFabrication" alt="" coords="225,334,340,362"/>
+<area shape="rect" id="node4" href="enrichment_parameters.html#bright.enrichment_parameters.EnrichmentParameters" title="EnrichmentParameters" alt="" coords="7,157,175,185"/>
+<area shape="rect" id="node7" href="bright_config.html#bright.bright_config.BrightConf" title="BrightConf" alt="" coords="47,106,135,134"/>
+<area shape="rect" id="node8" href="reactor_parameters.html#bright.reactor_parameters.ReactorParameters" title="ReactorParameters" alt="" coords="19,55,163,83"/>
+<area shape="rect" id="node13" href="origen_reactormg.html#bright.origen_reactormg.OrigenReactorMG" title="OrigenReactorMG" alt="" coords="400,182,533,210"/>
+<area shape="rect" id="node18" href="fast_reactor1g.html#bright.fast_reactor1g.FastReactor1G" title="FastReactor1G" alt="" coords="409,233,524,261"/>
+<area shape="rect" id="node22" href="light_water_reactor1g.html#bright.light_water_reactor1g.LightWaterReactor1G" title="LightWaterReactor1G" alt="" coords="389,283,544,311"/>
+<area shape="rect" id="node15" href="fluence_point.html#bright.fluence_point.FluencePoint" title="FluencePoint" alt="" coords="40,5,141,33"/>
+</map>
